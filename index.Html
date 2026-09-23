@@ -1,0 +1,2039 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>KHF Shop — Premium Shopping</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<style>
+  *{-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;font-family:'Plus Jakarta Sans','Hind Siliguri',system-ui,sans-serif;box-sizing:border-box}
+  html,body{overscroll-behavior:none;touch-action:pan-y;background:#f4f6fb;margin:0}
+  input,select,textarea{user-select:text;-webkit-user-select:text;font-family:inherit}
+  .bn{font-family:'Hind Siliguri',system-ui,sans-serif}
+  .line2{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .line1{display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
+  .line3{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+  .scrollx{scrollbar-width:none;-ms-overflow-style:none}
+  .scrollx::-webkit-scrollbar{display:none}
+  .fade-up{animation:fu .5s cubic-bezier(.22,.9,.28,1) both}
+  @keyframes fu{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+  .pop{animation:pop .35s cubic-bezier(.34,1.56,.64,1) both}
+  @keyframes pop{from{transform:scale(.7);opacity:0}to{transform:scale(1);opacity:1}}
+  .slide-up{animation:su .35s cubic-bezier(.22,.9,.28,1) both}
+  @keyframes su{from{transform:translateY(100%);opacity:.6}to{transform:none;opacity:1}}
+  .slide-right{animation:sr .35s cubic-bezier(.22,.9,.28,1) both}
+  @keyframes sr{from{transform:translateX(30px);opacity:0}to{transform:none;opacity:1}}
+  .slide-left{animation:sl .35s cubic-bezier(.22,.9,.28,1) both}
+  @keyframes sl{from{transform:translateX(-30px);opacity:0}to{transform:none;opacity:1}}
+  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+  @keyframes pulse-ring{0%{box-shadow:0 0 0 0 rgba(16,185,129,.55)}70%{box-shadow:0 0 0 18px rgba(16,185,129,0)}100%{box-shadow:0 0 0 0 rgba(16,185,129,0)}}
+  .float{animation:float 3.5s ease-in-out infinite}
+  .pulse-ring{animation:pulse-ring 2s infinite}
+  .press:active{transform:scale(.94);transition:transform .12s}
+  .press-sm:active{transform:scale(.97);transition:transform .12s}
+  .glass{background:rgba(255,255,255,.88);backdrop-filter:blur(24px) saturate(1.5);-webkit-backdrop-filter:blur(24px) saturate(1.5)}
+  .shadow-soft{box-shadow:0 4px 24px -6px rgba(15,23,42,.08),0 2px 8px -4px rgba(15,23,42,.04)}
+  .shadow-glow{box-shadow:0 10px 32px -10px rgba(16,185,129,.55)}
+  .shadow-glow-violet{box-shadow:0 10px 32px -10px rgba(139,92,246,.55)}
+  .shadow-glow-blue{box-shadow:0 10px 32px -10px rgba(59,130,246,.55)}
+  .shadow-glow-orange{box-shadow:0 10px 32px -10px rgba(251,146,60,.55)}
+  .shadow-glow-red{box-shadow:0 10px 32px -10px rgba(244,63,94,.5)}
+  .btn-grad{background:linear-gradient(135deg,#10b981 0%,#059669 55%,#047857 100%)}
+  .btn-grad-red{background:linear-gradient(135deg,#fb7185 0%,#e11d48 100%)}
+  .btn-grad-dark{background:linear-gradient(135deg,#1e293b 0%,#0f172a 100%)}
+  .btn-grad-violet{background:linear-gradient(135deg,#a855f7 0%,#7e22ce 100%)}
+  .btn-grad-blue{background:linear-gradient(135deg,#3b82f6 0%,#1d4ed8 100%)}
+  .btn-grad-orange{background:linear-gradient(135deg,#fb923c 0%,#ea580c 100%)}
+  .btn-grad-indigo{background:linear-gradient(135deg,#6366f1 0%,#4338ca 100%)}
+  .hero-grad{background:radial-gradient(circle at 15% 5%,rgba(255,255,255,.22) 0%,transparent 45%),radial-gradient(circle at 90% 95%,rgba(255,255,255,.15) 0%,transparent 40%),linear-gradient(135deg,#10b981 0%,#059669 50%,#065f46 100%)}
+  .wallet-grad{background:radial-gradient(circle at 15% 5%,rgba(255,255,255,.28) 0%,transparent 45%),radial-gradient(circle at 90% 95%,rgba(255,255,255,.2) 0%,transparent 40%),linear-gradient(135deg,#8b5cf6 0%,#7c3aed 50%,#4c1d95 100%)}
+  .ai-grad{background:radial-gradient(circle at 15% 5%,rgba(255,255,255,.28) 0%,transparent 45%),radial-gradient(circle at 90% 95%,rgba(255,255,255,.2) 0%,transparent 40%),linear-gradient(135deg,#a855f7 0%,#6366f1 50%,#4f46e5 100%)}
+  .dark-hero{background:radial-gradient(circle at 80% 10%,rgba(16,185,129,.35) 0%,transparent 55%),linear-gradient(135deg,#0f172a 0%,#1e293b 100%)}
+  .loader-dots span{display:inline-block;width:8px;height:8px;border-radius:50%;background:#10b981;margin:0 3px;animation:dot 1.3s infinite both}
+  .loader-dots span:nth-child(2){animation-delay:.15s;background:#059669}
+  .loader-dots span:nth-child(3){animation-delay:.4s;background:#047857}
+  @keyframes dot{0%,80%,100%{transform:scale(.4);opacity:.4}40%{transform:scale(1);opacity:1}}
+  .tab-pill{transition:all .3s cubic-bezier(.22,.9,.28,1)}
+  .tab-pill.on{background:linear-gradient(135deg,#10b981,#047857);color:#fff;box-shadow:0 8px 20px -8px rgba(16,185,129,.55)}
+  input::placeholder,textarea::placeholder{color:#94a3b8;font-weight:500}
+  input:focus,textarea:focus,select:focus{outline:none}
+  .inp{border:1.5px solid #e2e8f0;background:#fff;transition:all .2s}
+  .inp:focus{border-color:#10b981;box-shadow:0 0 0 4px rgba(16,185,129,.12)}
+  .cat-ring{border:2px solid transparent;background:linear-gradient(white,white) padding-box,linear-gradient(135deg,#10b981,#047857) border-box}
+  .rating-star{color:#f59e0b}
+  .notif-bar{background:linear-gradient(135deg,#fef3c7 0%,#fed7aa 100%);border:1px solid #fcd34d}
+  .badge-pulse{animation:badgePulse 1.5s infinite}
+  @keyframes badgePulse{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}
+  .banner-track{display:flex;transition:transform .7s cubic-bezier(.22,.9,.28,1);will-change:transform}
+  .banner-slide{min-width:100%;flex-shrink:0}
+  .banner-dot{transition:all .3s}
+  .banner-dot.active{width:24px;background:#fff}
+  .chat-bubble-user{background:linear-gradient(135deg,#10b981,#059669);color:#fff;border-bottom-right-radius:4px}
+  .chat-bubble-bot{background:#fff;color:#1e293b;border-bottom-left-radius:4px;box-shadow:0 2px 16px -4px rgba(15,23,42,.12);border:1px solid #f1f5f9}
+  .typing-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#a855f7;margin:0 2px;animation:tdot 1.3s infinite}
+  .typing-dot:nth-child(2){animation-delay:.2s;background:#8b5cf6}
+  .typing-dot:nth-child(3){animation-delay:.4s;background:#6366f1}
+  @keyframes tdot{0%,60%,100%{transform:translateY(0);opacity:.35}30%{transform:translateY(-7px);opacity:1}}
+  .quick-chip{transition:all .25s cubic-bezier(.22,.9,.28,1);background:#fff;border:1.5px solid #e2e8f0}
+  .quick-chip:active{transform:scale(.94);background:#f1f5f9;border-color:#10b981;color:#047857}
+  .wallet-card-sheen{position:absolute;inset:0;background:linear-gradient(115deg,transparent 40%,rgba(255,255,255,.18) 45%,transparent 50%);pointer-events:none}
+  .pulse-dot{width:8px;height:8px;border-radius:50%;background:#10b981;box-shadow:0 0 0 0 rgba(16,185,129,.7);animation:pulseDot 1.8s infinite}
+  @keyframes pulseDot{0%{box-shadow:0 0 0 0 rgba(16,185,129,.7)}70%{box-shadow:0 0 0 10px rgba(16,185,129,0)}100%{box-shadow:0 0 0 0 rgba(16,185,129,0)}}
+  .copy-flash{animation:copyFlash .5s ease}
+  @keyframes copyFlash{0%,100%{background:inherit}50%{background:rgba(16,185,129,.15)}}
+</style>
+</head>
+<body>
+
+<div id="app" class="max-w-[480px] mx-auto min-h-screen bg-[#f4f6fb] relative"></div>
+
+<div id="overlay" onclick="closeSide()" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-40 hidden"></div>
+<aside id="sidebar" class="fixed top-0 left-0 h-full w-[82%] max-w-[320px] bg-white z-50 -translate-x-full transition-transform duration-300 shadow-2xl flex flex-col">
+  <div class="hero-grad text-white p-6 pt-8 relative overflow-hidden">
+    <div class="absolute -top-16 -right-16 w-48 h-48 rounded-full bg-white/10"></div>
+    <div class="absolute -bottom-12 -left-12 w-40 h-40 rounded-full bg-white/10"></div>
+    <div class="relative">
+      <div class="flex items-center justify-between mb-4">
+        <div class="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur flex items-center justify-center shadow-lg">
+          <i class="fa-solid fa-bag-shopping text-xl"></i>
+        </div>
+        <button onclick="closeSide()" class="w-9 h-9 rounded-full bg-white/15 backdrop-blur flex items-center justify-center press"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <h2 id="sideShopName" class="font-black text-xl">KHF Shop</h2>
+      <p id="sideUser" class="text-xs text-emerald-100 mt-1 font-semibold">Welcome, Guest</p>
+    </div>
+  </div>
+  <nav class="p-3 flex-1 overflow-y-auto">
+    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest px-3 mb-2">Menu</p>
+    <a onclick="go('home')" class="flex items-center gap-3 p-3 rounded-2xl hover:bg-slate-50 cursor-pointer press-sm transition group">
+      <span class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center group-hover:bg-emerald-600 group-hover:text-white transition"><i class="fa-solid fa-house text-sm"></i></span>
+      <span class="font-bold text-sm text-slate-700">Home</span>
+    </a>
+    <a onclick="go('products')" class="flex items-center gap-3 p-3 rounded-2xl hover:bg-slate-50 cursor-pointer press-sm transition group">
+      <span class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition"><i class="fa-solid fa-compass text-sm"></i></span>
+      <span class="font-bold text-sm text-slate-700">Shop</span>
+    </a>
+    <a onclick="go('cart')" class="flex items-center gap-3 p-3 rounded-2xl hover:bg-slate-50 cursor-pointer press-sm transition group">
+      <span class="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center group-hover:bg-amber-600 group-hover:text-white transition"><i class="fa-solid fa-bag-shopping text-sm"></i></span>
+      <span class="font-bold text-sm text-slate-700">Cart</span>
+      <span data-cart-badge class="ml-auto min-w-[22px] h-[22px] bg-rose-500 text-white text-[10px] font-black rounded-full flex items-center justify-center px-1.5 shadow" style="display:none">0</span>
+    </a>
+    <a onclick="go('orders')" class="flex items-center gap-3 p-3 rounded-2xl hover:bg-slate-50 cursor-pointer press-sm transition group">
+      <span class="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center group-hover:bg-purple-600 group-hover:text-white transition"><i class="fa-solid fa-box text-sm"></i></span>
+      <span class="font-bold text-sm text-slate-700">My Orders</span>
+    </a>
+    <a onclick="go('wallet')" class="flex items-center gap-3 p-3 rounded-2xl hover:bg-slate-50 cursor-pointer press-sm transition group">
+      <span class="w-10 h-10 rounded-xl bg-violet-50 text-violet-600 flex items-center justify-center group-hover:bg-violet-600 group-hover:text-white transition"><i class="fa-solid fa-wallet text-sm"></i></span>
+      <span class="font-bold text-sm text-slate-700">My Wallet</span>
+    </a>
+    <a onclick="go('ai_chat')" class="flex items-center gap-3 p-3 rounded-2xl hover:bg-slate-50 cursor-pointer press-sm transition group">
+      <span class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center group-hover:bg-indigo-600 group-hover:text-white transition"><i class="fa-solid fa-robot text-sm"></i></span>
+      <span class="font-bold text-sm text-slate-700">AI Assistant</span>
+      <span class="ml-auto text-[9px] font-black text-white bg-emerald-500 px-1.5 py-0.5 rounded-full">LIVE</span>
+    </a>
+    <a onclick="openNotifications()" class="flex items-center gap-3 p-3 rounded-2xl hover:bg-slate-50 cursor-pointer press-sm transition group">
+      <span class="w-10 h-10 rounded-xl bg-orange-50 text-orange-600 flex items-center justify-center group-hover:bg-orange-600 group-hover:text-white transition"><i class="fa-solid fa-bell text-sm"></i></span>
+      <span class="font-bold text-sm text-slate-700">Notifications</span>
+      <span id="sideNotifBadge" class="ml-auto min-w-[22px] h-[22px] bg-rose-500 text-white text-[10px] font-black rounded-full flex items-center justify-center px-1.5 shadow" style="display:none">0</span>
+    </a>
+    <a onclick="go('profile')" class="flex items-center gap-3 p-3 rounded-2xl hover:bg-slate-50 cursor-pointer press-sm transition group">
+      <span class="w-10 h-10 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center group-hover:bg-rose-600 group-hover:text-white transition"><i class="fa-solid fa-user text-sm"></i></span>
+      <span class="font-bold text-sm text-slate-700">My Profile</span>
+    </a>
+    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest px-3 mt-5 mb-2">Help</p>
+    <a onclick="toast('Coming soon','info')" class="flex items-center gap-3 p-3 rounded-2xl hover:bg-slate-50 cursor-pointer press-sm transition">
+      <span class="w-10 h-10 rounded-xl bg-slate-100 text-slate-600 flex items-center justify-center"><i class="fa-solid fa-headset text-sm"></i></span>
+      <span class="font-bold text-sm text-slate-700">Help Center</span>
+    </a>
+    <a id="logoutBtn" onclick="logout()" class="hidden items-center gap-3 p-3 rounded-2xl hover:bg-rose-50 cursor-pointer press-sm transition mt-2">
+      <span class="w-10 h-10 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center"><i class="fa-solid fa-right-from-bracket text-sm"></i></span>
+      <span class="font-bold text-sm text-rose-600">Logout</span>
+    </a>
+  </nav>
+  <div class="p-4 border-t border-slate-100">
+    <p class="text-[10px] text-center text-slate-400 font-black">© 2025 <span id="sideFooterName">KHF Shop</span></p>
+  </div>
+</aside>
+
+<div id="modal" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-[60] hidden items-end sm:items-center justify-center p-0 sm:p-4"></div>
+
+<div id="loader" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[70] hidden items-center justify-center">
+  <div class="bg-white rounded-3xl px-8 py-6 flex flex-col items-center gap-3 shadow-2xl">
+    <div class="loader-dots"><span></span><span></span><span></span></div>
+    <span class="text-[10px] font-black text-slate-500 tracking-widest">LOADING</span>
+  </div>
+</div>
+
+<script>
+/* =========================================================
+   KHF SHOP — User App v10.0 (with Firebase)
+   ========================================================= */
+
+/* 🔥 FIREBASE CONFIG — Inserted here */
+const firebaseConfig = {
+  apiKey: "AIzaSyDwb52kilA_oe_I0hAX7OBqAQ5mR99_D7Y",
+  authDomain: "ff-tournament-7c944.firebaseapp.com",
+  databaseURL: "https://ff-tournament-7c944-default-rtdb.firebaseio.com",
+  projectId: "ff-tournament-7c944",
+  storageBucket: "ff-tournament-7c944.firebasestorage.app",
+  messagingSenderId: "595467347083",
+  appId: "1:595467347083:web:39a0513a059c635029608e",
+  measurementId: "G-N8DTNGYW57"
+};
+
+/* ---- Firebase init ---- */
+let fbApp = null, fbDb = null, fbRtdb = null, fbReady = false;
+try {
+  fbApp = firebase.initializeApp(firebaseConfig);
+  fbDb = firebase.firestore();
+  fbRtdb = firebase.database();
+  fbReady = true;
+  console.log('✅ Firebase connected:', firebaseConfig.projectId);
+} catch(e) {
+  console.warn('Firebase init failed:', e);
+  fbReady = false;
+}
+
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('selectstart', e => { if(!['INPUT','TEXTAREA'].includes(e.target.tagName)) e.preventDefault(); });
+document.addEventListener('keydown', e => { if((e.ctrlKey||e.metaKey) && ['+','-','=','0'].includes(e.key)) e.preventDefault(); });
+document.addEventListener('gesturestart', e => e.preventDefault());
+document.addEventListener('wheel', e => { if(e.ctrlKey) e.preventDefault(); }, {passive:false});
+let __tap = 0;
+document.addEventListener('touchend', e=>{ const n=Date.now(); if(n-__tap<280) e.preventDefault(); __tap=n; },{passive:false});
+
+const DB = {
+  get(k,d){ try{ return JSON.parse(localStorage.getItem('khf6_'+k)) ?? d; }catch(e){ return d; } },
+  set(k,v){ try{ localStorage.setItem('khf6_'+k, JSON.stringify(v)); }catch(e){ toast('Storage full!','error'); } }
+};
+
+const DEFAULT_PAYMENT_INFO = {
+  bkash: { enabled: true, number: '01812345678', method: 'Send Money', accountType: 'Personal', instructions: '' },
+  nagad: { enabled: true, number: '01712345678', method: 'Send Money', accountType: 'Personal', instructions: '' },
+  bank:  { enabled: true, bankName: 'Dutch Bangla Bank', accountNumber: '1234 5678 9012', accountHolder: 'KHF Shop', branch: 'Dhaka Main Branch', routingNumber: '', accountType: 'Current', instructions: '' },
+  minDeposit: 50,
+  autoApprove: false
+};
+
+const DEFAULT_SETTINGS = {
+  shopName: 'KHF Shop',
+  tagline: 'Premium Shopping Experience',
+  currency: '৳',
+  deliveryInside: 60,
+  deliveryOutside: 120,
+  freeDeliveryThreshold: 2000,
+  banners: [
+    {badge:'🎉 MEGA SALE 2025', title:'Shop Smarter,\nSave Bigger', subtitle:'Up to 40% off on 10,000+ products', btnText:'Explore Deals', image:''},
+    {badge:'⚡ FLASH DEAL', title:'Free Delivery\nOn ৳2000+', subtitle:'Limited time offer', btnText:'Shop Now', image:''},
+    {badge:'✨ NEW ARRIVALS', title:'Fresh Drops\nEvery Week', subtitle:'Be the first to grab', btnText:'Browse New', image:''}
+  ],
+  promoShow: true,
+  promoBadge: 'SPECIAL OFFER',
+  promoTitle: 'Free Delivery on ৳1000+',
+  promoSubtitle: 'Valid on all orders this week',
+  promoImage: '',
+  paymentInfo: DEFAULT_PAYMENT_INFO
+};
+function getSettings(){
+  const stored = DB.get('settings', {});
+  return {
+    ...DEFAULT_SETTINGS,
+    ...stored,
+    paymentInfo: { ...DEFAULT_PAYMENT_INFO, ...(stored.paymentInfo || {}) }
+  };
+}
+function getPaymentInfo(){ return getSettings().paymentInfo; }
+
+/* 🔥 Firebase: try to sync settings from cloud */
+async function fbSyncSettings(){
+  if(!fbReady) return;
+  try {
+    const doc = await fbDb.collection('settings').doc('shop').get();
+    if(doc.exists){
+      const remote = doc.data();
+      DB.set('settings', remote);
+      console.log('✅ Settings synced from Firebase');
+      render();
+    }
+  } catch(e) { console.warn('Firebase settings sync failed:', e); }
+}
+
+function seed(){
+  if(DB.get('seeded')) return;
+  DB.set('users', []);
+  DB.set('categories', [
+    {id:1, name:'Electronics', image:'https://images.unsplash.com/photo-1498049794561-7780e7231661?w=400&q=80'},
+    {id:2, name:'Fashion',     image:'https://images.unsplash.com/photo-1483985988355-763728e1935b?w=400&q=80'},
+    {id:3, name:'Grocery',     image:'https://images.unsplash.com/photo-1542838132-92c53300491e?w=400&q=80'},
+    {id:4, name:'Home',        image:'https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=400&q=80'},
+    {id:5, name:'Beauty',      image:'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=400&q=80'},
+    {id:6, name:'Sports',      image:'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&q=80'}
+  ]);
+  DB.set('products', [
+    {id:1, cat:1, name:'AirPods Pro 2 Wireless Earbuds', desc:'Active Noise Cancellation, Adaptive Audio, 30-hour battery.', price:2450, old:3400, stock:18, rating:4.8, reviews:342, sold:1240, delivery:60, image:'https://images.unsplash.com/photo-1600294037681-c80b4cb5b434?w=600&q=80', tag:'Best Seller'},
+    {id:2, cat:1, name:'Apple Watch Series 9 GPS 45mm', desc:'Always-On Retina display, heart rate monitoring, ECG.', price:3900, old:4800, stock:12, rating:4.9, reviews:187, sold:892, delivery:80, image:'https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=600&q=80', tag:'New'},
+    {id:3, cat:2, name:'Premium Cotton Panjabi — Navy Blue', desc:'100% organic cotton with hand-stitched embroidery.', price:1250, old:1900, stock:34, rating:4.7, reviews:521, sold:2130, delivery:60, image:'https://images.unsplash.com/photo-1622470953794-aa9c70b0fb9d?w=600&q=80', tag:'Trending'},
+    {id:4, cat:2, name:'Genuine Leather Wallet — Brown', desc:'Full-grain leather, RFID protected, 8 card slots.', price:850, old:1200, stock:48, rating:4.6, reviews:298, sold:1845, delivery:50, image:'https://images.unsplash.com/photo-1627123424574-724758594e93?w=600&q=80', tag:''},
+    {id:5, cat:3, name:'Sundarban Organic Honey 500g', desc:'Raw, unprocessed honey from Sundarban mangrove forest.', price:650, old:850, stock:80, rating:4.9, reviews:1102, sold:5120, delivery:70, image:'https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=600&q=80', tag:'Best Seller'},
+    {id:6, cat:4, name:'Nordic Ceramic Table Lamp', desc:'Minimalist Scandinavian design with warm LED glow.', price:980, old:1400, stock:22, rating:4.5, reviews:143, sold:498, delivery:100, image:'https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=600&q=80', tag:''},
+    {id:7, cat:5, name:'Vitamin C Brightening Face Serum', desc:'20% Vitamin C + Hyaluronic Acid + Vitamin E. 30ml.', price:720, old:950, stock:56, rating:4.8, reviews:876, sold:3420, delivery:50, image:'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=600&q=80', tag:'New'},
+    {id:8, cat:1, name:'Portable Bluetooth Speaker 360°', desc:'Surround sound, 24-hour playtime, IPX7 waterproof.', price:1890, old:2500, stock:26, rating:4.7, reviews:412, sold:1120, delivery:80, image:'https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=600&q=80', tag:''},
+    {id:9, cat:6, name:'Yoga Mat Premium 6mm — Anti-Slip', desc:'Eco-friendly TPE, dual-layer cushioning, carrying strap.', price:890, old:1300, stock:40, rating:4.6, reviews:245, sold:987, delivery:70, image:'https://images.unsplash.com/photo-1601925260368-ae2f83cf8b7f?w=600&q=80', tag:'Trending'},
+    {id:10, cat:3, name:'Premium Basmati Rice 5kg', desc:'Aged long-grain aromatic basmati rice.', price:1150, old:1350, stock:100, rating:4.8, reviews:689, sold:2870, delivery:120, image:'https://images.unsplash.com/photo-1586201375761-83865001e31c?w=600&q=80', tag:''},
+    {id:11, cat:4, name:'Aroma Diffuser with LED Lights', desc:'Ultrasonic diffuser with 7-color LED, 300ml capacity.', price:1450, old:1900, stock:19, rating:4.7, reviews:312, sold:756, delivery:80, image:'https://images.unsplash.com/photo-1544787219-7f47ccb76574?w=600&q=80', tag:''},
+    {id:12, cat:5, name:'Luxury Matte Lipstick Set — 6 Shades', desc:'Long-lasting matte finish with vitamin E.', price:1290, old:1800, stock:44, rating:4.9, reviews:534, sold:1890, delivery:50, image:'https://images.unsplash.com/photo-1586495777744-4413f21062fa?w=600&q=80', tag:'Trending'}
+  ]);
+  DB.set('orders', []);
+  DB.set('cart', []);
+  DB.set('notifications', []);
+  DB.set('wallets', {});
+  DB.set('deposits', []);
+  DB.set('transactions', []);
+  DB.set('seeded', true);
+}
+seed();
+
+let state = {
+  page: 'home',
+  user: DB.get('session_user', null),
+  params: {},
+  cart: DB.get('cart', []),
+  authTab: 'login',
+  orderTab: 'active',
+  filter: {cat:0, sort:'pop', maxPrice:100000, search:''},
+  showFilters: false,
+  bannerIdx: 0,
+  bannerTimer: null,
+  walletMethod: 'bkash',
+  walletTab: 'all',
+  chatHistory: DB.get('chat_history', []),
+  chatTyping: false
+};
+
+const $ = id => document.getElementById(id);
+const money = n => { const s = getSettings(); return s.currency + Number(n||0).toLocaleString('en-BD'); };
+const esc = s => (s??'').toString().replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const uid = arr => arr.length ? Math.max(...arr.map(x=>x.id))+1 : 1;
+const stars = r => { let h=''; for(let i=1;i<=5;i++) h += `<i class="fa-solid fa-star ${i<=Math.round(r)?'rating-star':'text-slate-200'} text-[10px]"></i>`; return h; };
+const nl2br = s => esc(s).replace(/\n/g,'<br>');
+
+function showLoader(v=true){ $('loader').style.display = v ? 'flex' : 'none'; }
+function openSide(){ $('sidebar').classList.remove('-translate-x-full'); $('overlay').classList.remove('hidden'); }
+function closeSide(){ $('sidebar').classList.add('-translate-x-full'); $('overlay').classList.add('hidden'); }
+function openModal(html){ $('modal').innerHTML = `<div class="bg-white w-full max-w-[440px] rounded-t-3xl sm:rounded-3xl shadow-2xl overflow-hidden slide-up" style="max-height:92vh">${html}</div>`; $('modal').style.display='flex'; }
+function closeModal(){ $('modal').style.display='none'; }
+
+function toast(msg, type='success'){
+  const C = {success:['from-emerald-500','to-emerald-600','fa-circle-check'], error:['from-rose-500','to-rose-600','fa-circle-exclamation'], info:['from-slate-800','to-slate-900','fa-circle-info']}[type];
+  const t = document.createElement('div');
+  t.className = `fixed top-5 left-1/2 -translate-x-1/2 z-[90] pop max-w-[90%]`;
+  t.innerHTML = `<div class="bg-gradient-to-br ${C[0]} ${C[1]} text-white pl-3 pr-5 py-2.5 rounded-full shadow-2xl flex items-center gap-2.5 text-sm font-black">
+    <span class="w-6 h-6 rounded-full bg-white/25 flex items-center justify-center shrink-0"><i class="fa-solid ${C[2]} text-xs"></i></span>
+    <span class="truncate">${esc(msg)}</span>
+  </div>`;
+  document.body.appendChild(t);
+  setTimeout(()=>{ t.style.transition='opacity .3s,transform .3s'; t.style.opacity='0'; t.style.transform='translate(-50%,-20px)'; setTimeout(()=>t.remove(), 300); }, 1900);
+}
+
+function copyText(text, btn){
+  try {
+    navigator.clipboard.writeText(text);
+    if(btn){ btn.classList.add('copy-flash'); setTimeout(()=>btn.classList.remove('copy-flash'), 500); }
+    toast('Copied!','success');
+  } catch(e){
+    const ta = document.createElement('textarea');
+    ta.value = text; document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); toast('Copied!','success'); } catch(_) { toast('Copy failed','error'); }
+    ta.remove();
+  }
+}
+
+function startBannerAuto(){
+  stopBannerAuto();
+  state.bannerTimer = setInterval(()=>{ state.bannerIdx = (state.bannerIdx + 1) % 3; updateBannerSlide(); }, 4500);
+}
+function stopBannerAuto(){ if(state.bannerTimer){ clearInterval(state.bannerTimer); state.bannerTimer = null; } }
+function updateBannerSlide(){
+  const track = $('bannerTrack'); if(!track) return;
+  track.style.transform = `translateX(-${state.bannerIdx * 100}%)`;
+  document.querySelectorAll('.banner-dot').forEach((d,i)=>d.classList.toggle('active', i === state.bannerIdx));
+}
+function goToBanner(i){ state.bannerIdx = i; updateBannerSlide(); startBannerAuto(); }
+let bannerTouchX = 0;
+function bannerTouchStart(e){ bannerTouchX = e.touches[0].clientX; stopBannerAuto(); }
+function bannerTouchEnd(e){
+  const dx = e.changedTouches[0].clientX - bannerTouchX;
+  if(Math.abs(dx) > 40){
+    if(dx < 0) state.bannerIdx = Math.min(2, state.bannerIdx + 1);
+    else state.bannerIdx = Math.max(0, state.bannerIdx - 1);
+    updateBannerSlide();
+  }
+  startBannerAuto();
+}
+
+function go(page, params={}){ stopBannerAuto(); state.page = page; state.params = params; closeSide(); render(); window.scrollTo({top:0, behavior:'instant'}); }
+
+function saveCart(){ DB.set('cart', state.cart); updateBadges(); }
+function addToCart(pid, qty=1, silent=false){
+  const p = DB.get('products',[]).find(x=>x.id===pid);
+  if(!p) return;
+  if(p.stock <= 0){ toast('Out of stock','error'); return; }
+  const it = state.cart.find(c=>c.id===pid);
+  if(it) it.qty += qty; else state.cart.push({id:pid, qty});
+  saveCart();
+  if(!silent) toast('Added to cart','success');
+}
+function updateCartQty(pid, qty){
+  if(qty<=0) state.cart = state.cart.filter(c=>c.id!==pid);
+  else { const it = state.cart.find(c=>c.id===pid); if(it) it.qty = qty; }
+  saveCart(); render();
+}
+function removeCart(pid){ state.cart = state.cart.filter(c=>c.id!==pid); saveCart(); render(); toast('Removed','info'); }
+function cartTotal(){ const P = DB.get('products',[]); return state.cart.reduce((s,c)=>{ const p = P.find(x=>x.id===c.id); return s + (p?p.price*c.qty:0); },0); }
+function cartCount(){ return state.cart.reduce((s,c)=>s+c.qty,0); }
+function cartSavings(){ const P = DB.get('products',[]); return state.cart.reduce((s,c)=>{ const p=P.find(x=>x.id===c.id); return s + (p && p.old ? (p.old-p.price)*c.qty : 0); },0); }
+
+function getWallets(){ return DB.get('wallets', {}); }
+function getMyBalance(){ if(!state.user) return 0; return getWallets()[state.user.id] || 0; }
+function setMyBalance(bal){ if(!state.user) return; const w = getWallets(); w[state.user.id] = Math.max(0, bal); DB.set('wallets', w); }
+function getMyTransactions(){ if(!state.user) return []; return DB.get('transactions',[]).filter(t=>t.userId === state.user.id); }
+function getMyDeposits(){ if(!state.user) return []; return DB.get('deposits',[]).filter(d=>d.userId === state.user.id); }
+function submitDeposit(method, amount, txnId, sender, methodType){
+  const deposits = DB.get('deposits',[]);
+  const d = {
+    id: uid(deposits),
+    userId: state.user.id,
+    userName: state.user.name,
+    userPhone: state.user.phone,
+    method, methodType,
+    amount: +amount, txnId, sender,
+    status: 'pending',
+    createdAt: new Date().toISOString()
+  };
+  deposits.unshift(d);
+  DB.set('deposits', deposits);
+  /* 🔥 Firebase: also save deposit request to cloud */
+  if(fbReady){
+    try { fbDb.collection('deposits').doc('dep_'+d.id+'_'+Date.now()).set(d); } catch(e){}
+  }
+  return d;
+}
+
+function getAllNotifications(){ return DB.get('notifications',[]); }
+function getUserNotifications(userId){ if(!userId) return []; return getAllNotifications().filter(n => n.target === 'all' || n.target === userId); }
+function getUnreadCount(userId){ if(!userId) return 0; return getUserNotifications(userId).filter(n => !(n.read_by||[]).includes(userId)).length; }
+function markAllRead(userId){
+  if(!userId) return;
+  const all = DB.get('notifications',[]);
+  let changed = false;
+  all.forEach(n=>{
+    if(n.target === 'all' || n.target === userId){
+      if(!n.read_by) n.read_by = [];
+      if(!n.read_by.includes(userId)){ n.read_by.push(userId); changed = true; }
+    }
+  });
+  if(changed) DB.set('notifications', all);
+}
+function openNotifications(){
+  if(!state.user){ toast('Login to view notifications','info'); go('login'); return; }
+  const list = getUserNotifications(state.user.id);
+  markAllRead(state.user.id);
+  openModal(`
+    <div class="p-5 max-h-[88vh] overflow-y-auto">
+      <div class="flex items-center justify-between mb-4">
+        <div class="flex items-center gap-2.5">
+          <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-orange-400 to-orange-600 text-white flex items-center justify-center shadow-lg"><i class="fa-solid fa-bell"></i></div>
+          <div><h3 class="font-black text-lg text-slate-900">Notifications</h3><p class="text-[10px] text-slate-400 font-black">${list.length} message${list.length!==1?'s':''}</p></div>
+        </div>
+        <button onclick="closeModal()" class="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center"><i class="fa-solid fa-xmark text-sm"></i></button>
+      </div>
+      ${list.length ? list.map(n=>`
+        <div class="bg-slate-50 rounded-2xl p-3.5 mb-2 border border-slate-100">
+          <div class="flex items-start gap-3">
+            <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-400 to-emerald-600 text-white flex items-center justify-center shrink-0 shadow"><i class="fa-solid fa-bullhorn text-xs"></i></div>
+            <div class="flex-1 min-w-0">
+              <p class="font-black text-sm text-slate-800">${esc(n.title)}</p>
+              <p class="text-xs text-slate-600 font-semibold mt-1 leading-relaxed">${nl2br(n.message)}</p>
+              <p class="text-[10px] text-slate-400 font-black mt-2"><i class="fa-solid fa-clock mr-1"></i>${new Date(n.created_at).toLocaleString()}</p>
+            </div>
+          </div>
+        </div>
+      `).join('') : `
+        <div class="text-center py-12">
+          <div class="w-20 h-20 mx-auto rounded-full bg-slate-100 flex items-center justify-center mb-3">
+            <i class="fa-solid fa-bell-slash text-3xl text-slate-300"></i>
+          </div>
+          <p class="font-black text-slate-600">No notifications</p>
+        </div>
+      `}
+      <button onclick="closeModal();render()" class="press w-full mt-4 bg-slate-100 text-slate-700 py-3.5 rounded-2xl font-black">Close</button>
+    </div>
+  `);
+}
+
+function getDeliveryCharge(location){
+  const s = getSettings();
+  if(!state.cart.length) return 0;
+  const subtotal = cartTotal();
+  if(s.freeDeliveryThreshold > 0 && subtotal >= s.freeDeliveryThreshold) return 0;
+  const P = DB.get('products',[]);
+  const base = location === 'outside' ? s.deliveryOutside : s.deliveryInside;
+  let maxC = 0;
+  state.cart.forEach(c=>{
+    const p = P.find(x=>x.id===c.id);
+    if(!p) return;
+    const ch = (p.delivery && p.delivery > 0) ? p.delivery : base;
+    if(ch > maxC) maxC = ch;
+  });
+  return maxC;
+}
+
+function updateBadges(){
+  const n = cartCount();
+  document.querySelectorAll('[data-cart-badge]').forEach(b=>{ b.textContent = n>99 ? '99+' : n; b.style.display = n ? 'flex' : 'none'; });
+  const unread = state.user ? getUnreadCount(state.user.id) : 0;
+  const sideBadge = $('sideNotifBadge');
+  if(sideBadge){ sideBadge.textContent = unread>9 ? '9+' : unread; sideBadge.style.display = unread ? 'flex' : 'none'; }
+  document.querySelectorAll('[data-notif-badge]').forEach(b=>{ b.textContent = unread>9 ? '9+' : unread; b.style.display = unread ? 'flex' : 'none'; });
+}
+
+function login(email, pass){
+  const u = DB.get('users',[]).find(x=>x.email===email && x.password===pass);
+  if(!u) return {ok:false, msg:'Invalid email or password'};
+  if(u.blocked) return {ok:false, msg:'Account blocked'};
+  state.user = u; DB.set('session_user', u);
+  return {ok:true};
+}
+function signup(name, phone, email, pass){
+  const users = DB.get('users',[]);
+  if(users.find(x=>x.email===email)) return {ok:false, msg:'Email already registered'};
+  const u = {id:uid(users), name, phone, email, password:pass, village:'', upazila:'', district:'', address:'', blocked:false, joined:new Date().toISOString()};
+  users.push(u); DB.set('users', users);
+  state.user = u; DB.set('session_user', u);
+  /* 🔥 Firebase: mirror user to cloud */
+  if(fbReady){ try { fbDb.collection('users').doc('u_'+u.id).set(u); } catch(e){} }
+  return {ok:true};
+}
+function logout(){ state.user = null; DB.set('session_user', null); state.chatHistory = []; DB.set('chat_history', []); go('home'); toast('Logged out','info'); }
+
+function buildFullAddress(u){
+  const parts = [];
+  if(u.address) parts.push(u.address);
+  if(u.village) parts.push('গ্রাম: ' + u.village);
+  if(u.upazila) parts.push('উপজেলা: ' + u.upazila);
+  if(u.district) parts.push('জেলা: ' + u.district);
+  return parts.join(', ');
+}
+
+function placeOrder(payload){
+  const orders = DB.get('orders',[]);
+  const P = DB.get('products',[]);
+  const items = state.cart.map(c=>{
+    const p = P.find(x=>x.id===c.id);
+    return {pid:p.id, name:p.name, price:p.price, qty:c.qty, image:p.image};
+  });
+  items.forEach(i=>{ const p = P.find(x=>x.id===i.pid); if(p) p.stock = Math.max(0, p.stock - i.qty); });
+  DB.set('products', P);
+  const sub = cartTotal();
+  const del = getDeliveryCharge(payload.location);
+  const order = {
+    id: uid(orders), user_id: state.user?.id || 0,
+    user_name: payload.name, phone: payload.phone,
+    village: payload.village, upazila: payload.upazila, district: payload.district,
+    address: payload.address, full_address: payload.full_address,
+    location: payload.location, payment: payload.payment,
+    subtotal: sub, delivery: del, total: sub + del,
+    status: 'Placed', created_at: new Date().toISOString(), items
+  };
+  orders.unshift(order);
+  DB.set('orders', orders);
+  /* 🔥 Firebase: save order to cloud */
+  if(fbReady){ try { fbDb.collection('orders').doc('order_'+order.id+'_'+Date.now()).set(order); } catch(e){} }
+  state.cart = []; saveCart();
+  return order;
+}
+
+function render(){
+  const s = getSettings();
+  const shop = $('sideShopName'); if(shop) shop.textContent = s.shopName;
+  const ft = $('sideFooterName'); if(ft) ft.textContent = s.shopName;
+
+  switch(state.page){
+    case 'home':            renderHome(); break;
+    case 'products':        renderProducts(); break;
+    case 'detail':          renderDetail(); break;
+    case 'cart':            renderCart(); break;
+    case 'checkout':        renderCheckout(); break;
+    case 'orders':          renderOrders(); break;
+    case 'profile':         renderProfile(); break;
+    case 'wallet':          renderWallet(); break;
+    case 'wallet_deposit':  renderWalletDeposit(); break;
+    case 'wallet_history':  renderWalletHistory(); break;
+    case 'security':        renderSecurity(); break;
+    case 'country':         renderCountry(); break;
+    case 'ai_chat':         renderAIChat(); break;
+    case 'login':           renderAuth(); break;
+    default:                renderHome();
+  }
+  updateBadges();
+  const l = $('logoutBtn'); if(l) l.style.display = state.user ? 'flex' : 'none';
+  const us = $('sideUser'); if(us) us.textContent = state.user ? 'Welcome, ' + state.user.name : 'Welcome, Guest';
+}
+
+function header(title, showBack=false, opts={}){
+  return `
+  <header class="sticky top-0 z-30 glass border-b border-slate-100">
+    <div class="flex items-center gap-2 px-3 h-16">
+      ${showBack
+        ? `<button onclick="history.length>1?history.back():go('home')" class="press w-10 h-10 rounded-2xl flex items-center justify-center bg-slate-100"><i class="fa-solid fa-arrow-left text-slate-700"></i></button>`
+        : `<button onclick="openSide()" class="press w-10 h-10 rounded-2xl flex items-center justify-center bg-slate-100"><i class="fa-solid fa-bars-staggered text-slate-700"></i></button>`}
+      ${opts.search
+        ? `<div class="flex-1 relative">
+            <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+            <input oninput="state.filter.search=this.value;renderProducts()" value="${esc(state.filter.search||'')}" placeholder="Search products..." class="w-full bg-slate-100 rounded-2xl pl-10 pr-3 py-3 text-sm font-semibold">
+           </div>`
+        : `<h1 class="font-black text-base flex-1 truncate text-slate-900">${esc(title)}</h1>`}
+      <button onclick="openNotifications()" class="press relative w-10 h-10 rounded-2xl bg-slate-100 flex items-center justify-center">
+        <i class="fa-solid fa-bell text-slate-700"></i>
+        <span data-notif-badge class="absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-gradient-to-br from-orange-400 to-orange-600 text-white text-[9px] font-black rounded-full flex items-center justify-center px-1 shadow-lg badge-pulse" style="display:none">0</span>
+      </button>
+      <button onclick="go('cart')" class="press relative w-10 h-10 rounded-2xl bg-slate-100 flex items-center justify-center">
+        <i class="fa-solid fa-bag-shopping text-slate-700"></i>
+        <span data-cart-badge class="absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-gradient-to-br from-rose-500 to-rose-600 text-white text-[10px] font-black rounded-full flex items-center justify-center px-1 shadow-lg" style="display:none">0</span>
+      </button>
+    </div>
+  </header>`;
+}
+
+function bottomNav(active){
+  const items = [
+    {k:'home',    icon:'fa-house',        label:'Home'},
+    {k:'products',icon:'fa-compass',      label:'Shop'},
+    {k:'cart',    icon:'fa-bag-shopping', label:'Cart', cart:true},
+    {k:'orders',  icon:'fa-box',          label:'Orders'},
+    {k:'profile', icon:'fa-user',         label:'Profile'}
+  ];
+  return `
+  <nav class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] z-30 px-3 pb-3">
+    <div class="glass rounded-[26px] shadow-[0_-8px_40px_-12px_rgba(15,23,42,0.2)] border border-slate-200/60 px-2 py-1.5">
+      <div class="grid grid-cols-5">
+        ${items.map(i=>{
+          const on = active===i.k;
+          return `
+          <button onclick="go('${i.k}')" class="press relative flex flex-col items-center justify-center py-2 rounded-2xl transition ${on?'text-emerald-600':'text-slate-400'}">
+            ${on?`<span class="absolute inset-x-3 top-0 h-0.5 rounded-full bg-gradient-to-r from-emerald-500 to-emerald-600"></span>`:''}
+            <i class="fa-solid ${i.icon} text-[17px]"></i>
+            <span class="text-[9px] font-black mt-1 tracking-wide">${i.label}</span>
+            ${i.cart?`<span data-cart-badge class="absolute top-1 right-4 min-w-[18px] h-[18px] bg-gradient-to-br from-rose-500 to-rose-600 text-white text-[9px] font-black rounded-full flex items-center justify-center px-1 shadow" style="display:none">0</span>`:''}
+          </button>`;
+        }).join('')}
+      </div>
+    </div>
+  </nav>`;
+}
+
+function renderHome(){
+  const s = getSettings();
+  const cats = DB.get('categories',[]);
+  const prods = DB.get('products',[]);
+  const featured = prods.slice().sort((a,b)=>b.sold-a.sold).slice(0,4);
+  const newArrivals = prods.slice().sort((a,b)=>b.id-a.id).slice(0,6);
+  const trending = prods.filter(p=>p.tag==='Trending').slice(0,4);
+  const latest = state.user ? getUserNotifications(state.user.id).filter(n=>!(n.read_by||[]).includes(state.user.id))[0] : null;
+  const banners = s.banners || DEFAULT_SETTINGS.banners;
+
+  $('app').innerHTML = `
+    ${header(s.shopName)}
+    <div class="pb-28 bg-[#f4f6fb]">
+      ${latest ? `
+        <div class="px-4 pt-3">
+          <div onclick="openNotifications()" class="notif-bar rounded-2xl p-3 flex items-center gap-3 cursor-pointer press-sm fade-up">
+            <div class="w-9 h-9 rounded-xl bg-white/80 flex items-center justify-center shrink-0 shadow"><i class="fa-solid fa-bullhorn text-amber-600"></i></div>
+            <div class="flex-1 min-w-0">
+              <p class="text-[10px] font-black text-amber-700 uppercase tracking-widest">NEW NOTIFICATION</p>
+              <p class="text-xs font-black text-slate-800 line1 mt-0.5">${esc(latest.title)}</p>
+            </div>
+            <i class="fa-solid fa-chevron-right text-amber-600 text-xs"></i>
+          </div>
+        </div>` : ''}
+      <div class="px-4 pt-4">
+        <div class="rounded-[28px] overflow-hidden shadow-glow relative fade-up" ontouchstart="bannerTouchStart(event)" ontouchend="bannerTouchEnd(event)">
+          <div id="bannerTrack" class="banner-track">
+            ${banners.map((b)=>{
+              const bg = b.image ? `background-image:linear-gradient(135deg,rgba(5,150,105,.55),rgba(4,120,87,.65)),url('${esc(b.image)}');background-size:cover;background-position:center` : '';
+              const cls = b.image ? '' : 'hero-grad';
+              return `
+              <div class="banner-slide ${cls} p-6 text-white relative overflow-hidden" style="min-height:215px;${bg}">
+                <div class="absolute -top-10 -right-10 w-40 h-40 rounded-full bg-white/10 pointer-events-none"></div>
+                <div class="absolute -bottom-12 -left-8 w-32 h-32 rounded-full bg-white/10 pointer-events-none"></div>
+                <div class="absolute top-6 right-6 float opacity-90"><i class="fa-solid fa-bag-shopping text-5xl text-white/25"></i></div>
+                <div class="relative">
+                  <span class="text-[10px] font-black tracking-widest bg-white/25 backdrop-blur px-3 py-1.5 rounded-full">${esc(b.badge)}</span>
+                  <h2 class="text-[25px] font-black mt-3 leading-[1.1]">${nl2br(b.title)}</h2>
+                  <p class="text-xs text-emerald-50 mt-2 font-semibold">${esc(b.subtitle)}</p>
+                  <button onclick="go('products')" class="press mt-4 bg-white text-emerald-700 font-black text-xs px-5 py-2.5 rounded-2xl shadow-lg flex items-center gap-2">
+                    ${esc(b.btnText)} <i class="fa-solid fa-arrow-right"></i>
+                  </button>
+                </div>
+              </div>`;
+            }).join('')}
+          </div>
+          <div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5">
+            ${banners.map((_,i)=>`<button onclick="event.stopPropagation();goToBanner(${i})" class="banner-dot w-1.5 h-1.5 rounded-full bg-white/50 ${i===0?'active':''}"></button>`).join('')}
+          </div>
+        </div>
+      </div>
+      <div class="px-4 mt-4 grid grid-cols-3 gap-2.5">
+        <div class="bg-white rounded-2xl p-3 shadow-soft text-center fade-up"><div class="w-9 h-9 mx-auto rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center"><i class="fa-solid fa-truck-fast text-sm"></i></div><p class="text-[10px] text-slate-600 font-black mt-1.5 leading-tight">Free Delivery</p></div>
+        <div class="bg-white rounded-2xl p-3 shadow-soft text-center fade-up" style="animation-delay:.06s"><div class="w-9 h-9 mx-auto rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center"><i class="fa-solid fa-shield-halved text-sm"></i></div><p class="text-[10px] text-slate-600 font-black mt-1.5 leading-tight">Secure Pay</p></div>
+        <div class="bg-white rounded-2xl p-3 shadow-soft text-center fade-up" style="animation-delay:.12s"><div class="w-9 h-9 mx-auto rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center"><i class="fa-solid fa-rotate-left text-sm"></i></div><p class="text-[10px] text-slate-600 font-black mt-1.5 leading-tight">7-Day Return</p></div>
+      </div>
+      <div class="px-4 mt-4">
+        <div onclick="go('ai_chat')" class="ai-grad rounded-3xl p-4 text-white shadow-glow-violet cursor-pointer press fade-up relative overflow-hidden">
+          <div class="absolute -top-8 -right-8 w-32 h-32 rounded-full bg-white/10"></div>
+          <div class="relative flex items-center gap-3">
+            <div class="w-12 h-12 rounded-2xl bg-white/25 backdrop-blur flex items-center justify-center shadow-lg"><i class="fa-solid fa-robot text-xl"></i></div>
+            <div class="flex-1 min-w-0">
+              <p class="text-[10px] font-black tracking-widest text-purple-100">AI ASSISTANT</p>
+              <h4 class="font-black text-sm mt-0.5">Chat with KHF AI — 24/7</h4>
+              <p class="text-[10px] text-purple-100 mt-0.5 font-semibold">Ask anything about orders, payment, delivery</p>
+            </div>
+            <i class="fa-solid fa-arrow-right text-white"></i>
+          </div>
+        </div>
+      </div>
+      <div class="mt-6">
+        <div class="flex items-center justify-between px-4 mb-3">
+          <h3 class="font-black text-slate-900 text-base">Categories</h3>
+          <button onclick="go('products')" class="text-xs text-emerald-600 font-black flex items-center gap-1">See All <i class="fa-solid fa-chevron-right text-[9px]"></i></button>
+        </div>
+        <div class="flex gap-3.5 overflow-x-auto scrollx px-4 pb-1">
+          ${cats.map(c=>`
+            <div onclick="go('products',{cat:${c.id}})" class="shrink-0 w-[78px] flex flex-col items-center gap-2 press cursor-pointer fade-up">
+              <div class="w-[68px] h-[68px] rounded-3xl overflow-hidden bg-white shadow-soft p-1 cat-ring">
+                <img src="${esc(c.image)}" class="w-full h-full object-cover rounded-[20px]" alt="" loading="lazy">
+              </div>
+              <span class="text-[11px] font-black text-slate-700 text-center leading-tight line2">${esc(c.name)}</span>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+      <div class="mt-6">
+        <div class="flex items-center justify-between px-4 mb-3">
+          <div><h3 class="font-black text-slate-900 text-base">🔥 Featured Deals</h3><p class="text-[11px] text-slate-400 font-bold mt-0.5">Hand-picked for you</p></div>
+          <button onclick="go('products')" class="text-xs text-emerald-600 font-black">See All</button>
+        </div>
+        <div class="grid grid-cols-2 gap-3 px-4">
+          ${featured.map((p,i)=>productCard(p,i)).join('')}
+        </div>
+      </div>
+      ${s.promoShow ? `
+      <div class="px-4 mt-6">
+        <div class="dark-hero rounded-[24px] p-5 text-white relative overflow-hidden fade-up" ${s.promoImage?`style="background-image:linear-gradient(135deg,rgba(15,23,42,.85),rgba(30,41,59,.85)),url('${esc(s.promoImage)}');background-size:cover;background-position:center"`:''}>
+          <div class="absolute -top-8 -right-8 w-32 h-32 rounded-full bg-emerald-500/20"></div>
+          <div class="relative flex items-center gap-4">
+            <div class="w-14 h-14 rounded-2xl bg-emerald-500/30 backdrop-blur flex items-center justify-center shrink-0"><i class="fa-solid fa-gift text-2xl text-emerald-300"></i></div>
+            <div class="flex-1 min-w-0">
+              <p class="text-[10px] font-black text-emerald-400 tracking-widest">${esc(s.promoBadge)}</p>
+              <h4 class="font-black text-lg mt-0.5 leading-tight">${esc(s.promoTitle)}</h4>
+              <p class="text-[11px] text-slate-300 mt-0.5 font-semibold">${esc(s.promoSubtitle)}</p>
+            </div>
+          </div>
+        </div>
+      </div>` : ''}
+      <div class="mt-6">
+        <div class="flex items-center justify-between px-4 mb-3">
+          <div><h3 class="font-black text-slate-900 text-base">✨ New Arrivals</h3><p class="text-[11px] text-slate-400 font-bold mt-0.5">Fresh drops this week</p></div>
+          <button onclick="go('products')" class="text-xs text-emerald-600 font-black">See All</button>
+        </div>
+        <div class="grid grid-cols-2 gap-3 px-4">
+          ${newArrivals.map((p,i)=>productCard(p,i)).join('')}
+        </div>
+      </div>
+      ${trending.length ? `
+      <div class="mt-6">
+        <div class="flex items-center justify-between px-4 mb-3"><h3 class="font-black text-slate-900 text-base">⭐ Trending Now</h3></div>
+        <div class="flex gap-3 overflow-x-auto scrollx px-4 pb-2">
+          ${trending.map(p=>`
+            <div onclick="go('detail',{id:${p.id}})" class="shrink-0 w-[160px] bg-white rounded-3xl overflow-hidden shadow-soft press cursor-pointer fade-up">
+              <div class="aspect-square bg-slate-100 relative">
+                <img src="${esc(p.image)}" class="w-full h-full object-cover" loading="lazy">
+                <span class="absolute top-2.5 left-2.5 text-[9px] font-black px-2 py-0.5 rounded-full bg-gradient-to-br from-rose-500 to-rose-600 text-white">HOT</span>
+              </div>
+              <div class="p-3">
+                <h4 class="text-xs font-black line2 h-8 text-slate-800 leading-snug">${esc(p.name)}</h4>
+                <div class="flex items-center gap-1 mt-1">${stars(p.rating)}</div>
+                <div class="flex items-center justify-between mt-1.5">
+                  <span class="text-emerald-600 font-black text-sm">${money(p.price)}</span>
+                  <span class="text-[10px] font-black text-slate-400">${p.sold} sold</span>
+                </div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>` : ''}
+      <div class="mt-8 px-4">
+        <p class="text-center text-[10px] text-slate-400 font-black">© 2025 ${esc(s.shopName)} — ${esc(s.tagline)}</p>
+      </div>
+    </div>
+    ${bottomNav('home')}
+  `;
+  updateBadges();
+  setTimeout(()=>{ updateBannerSlide(); startBannerAuto(); }, 100);
+}
+
+function productCard(p, idx=0){
+  const off = p.old ? Math.round((1 - p.price/p.old) * 100) : 0;
+  return `
+    <div class="bg-white rounded-3xl overflow-hidden shadow-soft fade-up flex flex-col relative" style="animation-delay:${idx*0.04}s">
+      ${off>0 ? `<span class="absolute top-3 left-3 z-10 btn-grad-red text-white text-[10px] font-black px-2.5 py-1 rounded-full">-${off}%</span>` : ''}
+      ${p.tag && !off ? `<span class="absolute top-3 left-3 z-10 bg-slate-900 text-white text-[9px] font-black px-2 py-1 rounded-full">${esc(p.tag)}</span>` : ''}
+      <a onclick="go('detail',{id:${p.id}})" class="block cursor-pointer">
+        <div class="aspect-square bg-slate-100 overflow-hidden relative">
+          <img src="${esc(p.image)}" class="w-full h-full object-cover" loading="lazy" alt="">
+          ${p.stock<=0 ? `<div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center"><span class="text-white text-[10px] font-black px-3 py-1.5 rounded-full bg-rose-500">OUT OF STOCK</span></div>` : ''}
+        </div>
+      </a>
+      <div class="p-3 flex flex-col flex-1">
+        <div class="flex items-center gap-1 mb-1.5">${stars(p.rating)}<span class="text-[10px] text-slate-400 font-black ml-0.5">${p.rating}</span></div>
+        <h3 class="text-[13px] font-black leading-snug line2 h-[36px] text-slate-800">${esc(p.name)}</h3>
+        <div class="mt-auto pt-2.5 flex items-end justify-between gap-1.5">
+          <div class="min-w-0">
+            <div class="text-emerald-600 font-black text-base leading-none">${money(p.price)}</div>
+            ${p.old ? `<div class="text-[10px] text-slate-400 line-through font-black mt-0.5">${money(p.old)}</div>` : ''}
+          </div>
+          <button onclick="event.stopPropagation();addToCart(${p.id})" class="press btn-grad w-9 h-9 shrink-0 rounded-2xl text-white flex items-center justify-center shadow-glow">
+            <i class="fa-solid fa-plus text-xs"></i>
+          </button>
+        </div>
+      </div>
+    </div>`;
+}
+
+function renderProducts(){
+  const cats = DB.get('categories',[]);
+  let prods = DB.get('products',[]);
+  if(state.params.cat){ state.filter.cat = state.params.cat; state.params.cat = 0; }
+  if(state.filter.cat) prods = prods.filter(p=>p.cat===state.filter.cat);
+  if(state.filter.search){
+    const q = state.filter.search.toLowerCase();
+    prods = prods.filter(p=>p.name.toLowerCase().includes(q) || p.desc.toLowerCase().includes(q));
+  }
+  prods = prods.filter(p => p.price <= state.filter.maxPrice);
+  if(state.filter.sort==='low')  prods.sort((a,b)=>a.price-b.price);
+  if(state.filter.sort==='high') prods.sort((a,b)=>b.price-a.price);
+  if(state.filter.sort==='new')  prods.sort((a,b)=>b.id-a.id);
+  if(state.filter.sort==='pop')  prods.sort((a,b)=>b.sold-a.sold);
+  if(state.filter.sort==='rating') prods.sort((a,b)=>b.rating-a.rating);
+
+  $('app').innerHTML = `
+    ${header('', true, {search:true})}
+    <div class="sticky top-16 z-20 bg-white pb-3 pt-3 border-b border-slate-100">
+      <div class="flex gap-2 overflow-x-auto scrollx px-4 pb-2.5">
+        <button onclick="state.filter.cat=0;render()" class="tab-pill shrink-0 px-4 py-2 rounded-full text-xs font-black bg-slate-100 text-slate-600 ${!state.filter.cat?'on':''}">All</button>
+        ${cats.map(c=>`<button onclick="state.filter.cat=${c.id};render()" class="tab-pill shrink-0 px-4 py-2 rounded-full text-xs font-black bg-slate-100 text-slate-600 ${state.filter.cat===c.id?'on':''}">${esc(c.name)}</button>`).join('')}
+      </div>
+      <div class="flex items-center gap-2 px-4">
+        <button onclick="state.showFilters=!state.showFilters;render()" class="press flex items-center gap-1.5 bg-slate-100 text-slate-700 rounded-xl px-3.5 py-2.5 text-xs font-black"><i class="fa-solid fa-sliders text-[11px]"></i> Filters</button>
+        <select onchange="state.filter.sort=this.value;render()" class="flex-1 text-xs font-black border-0 rounded-xl px-3 py-2.5 bg-slate-100 focus:outline-none">
+          <option value="pop"    ${state.filter.sort==='pop'?'selected':''}>🔥 Popular</option>
+          <option value="new"    ${state.filter.sort==='new'?'selected':''}>🆕 Newest</option>
+          <option value="rating" ${state.filter.sort==='rating'?'selected':''}>⭐ Top Rated</option>
+          <option value="low"    ${state.filter.sort==='low'?'selected':''}>💰 Low → High</option>
+          <option value="high"   ${state.filter.sort==='high'?'selected':''}>💎 High → Low</option>
+        </select>
+      </div>
+      ${state.showFilters ? `
+        <div class="px-4 pt-3 fade-up">
+          <div class="bg-slate-50 rounded-2xl p-4">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-[11px] font-black text-slate-600">Max Price</span>
+              <span id="mpv" class="text-xs font-black text-emerald-600">${money(state.filter.maxPrice)}</span>
+            </div>
+            <input type="range" min="100" max="100000" step="100" value="${state.filter.maxPrice}" oninput="document.getElementById('mpv').textContent='৳'+this.value;state.filter.maxPrice=+this.value;render()" class="w-full accent-emerald-600 h-1.5">
+          </div>
+        </div>` : ''}
+    </div>
+    <div class="px-4 pt-4 pb-28 bg-[#f4f6fb] min-h-[60vh]">
+      <p class="text-xs text-slate-500 mb-3 font-black"><i class="fa-solid fa-box mr-1 text-emerald-600"></i> ${prods.length} product${prods.length!==1?'s':''} found</p>
+      ${prods.length ? `<div class="grid grid-cols-2 gap-3">${prods.map((p,i)=>productCard(p,i)).join('')}</div>` : `
+        <div class="text-center py-24">
+          <div class="w-24 h-24 mx-auto rounded-full bg-white shadow-soft flex items-center justify-center mb-4"><i class="fa-solid fa-magnifying-glass text-3xl text-slate-300"></i></div>
+          <p class="font-black text-slate-700 text-lg">No products found</p>
+          <button onclick="state.filter={cat:0,sort:'pop',maxPrice:100000,search:''};render()" class="press btn-grad mt-5 text-white px-6 py-3 rounded-2xl text-xs font-black shadow-glow">Clear Filters</button>
+        </div>`}
+    </div>
+    ${bottomNav('products')}
+  `;
+  updateBadges();
+}
+
+let dQty = 1;
+function renderDetail(){
+  const p = DB.get('products',[]).find(x=>x.id===state.params.id);
+  if(!p){ go('products'); return; }
+  const related = DB.get('products',[]).filter(x=>x.cat===p.cat && x.id!==p.id).slice(0,6);
+  const off = p.old ? Math.round((1 - p.price/p.old) * 100) : 0;
+  dQty = 1;
+  const cat = DB.get('categories',[]).find(c=>c.id===p.cat);
+
+  $('app').innerHTML = `
+    ${header('Product Details', true)}
+    <div class="pb-32 bg-[#f4f6fb]">
+      <div class="bg-white fade-up">
+        <div class="aspect-square bg-slate-50 relative">
+          <img id="mainImg" src="${esc(p.image)}" class="w-full h-full object-cover" alt="">
+          ${off>0 ? `<span class="absolute top-4 left-4 btn-grad-red text-white text-xs font-black px-3 py-1.5 rounded-full">-${off}% OFF</span>` : ''}
+        </div>
+      </div>
+      <div class="bg-white mt-2 p-5 fade-up" style="animation-delay:.06s">
+        ${cat ? `<p class="text-[10px] font-black text-emerald-600 tracking-widest uppercase">${esc(cat.name)}</p>` : ''}
+        <h1 class="text-[19px] font-black text-slate-900 leading-snug mt-1.5">${esc(p.name)}</h1>
+        <div class="flex items-center gap-3 mt-2.5">
+          <div class="flex items-center gap-1">${stars(p.rating)}</div>
+          <span class="text-xs font-black text-slate-500">${p.rating} · ${p.reviews} reviews</span>
+          <span class="text-xs font-black text-emerald-600 ml-auto">${p.sold} sold</span>
+        </div>
+        <div class="flex items-end gap-3 mt-4">
+          <span class="text-3xl font-black text-emerald-600 leading-none">${money(p.price)}</span>
+          ${p.old ? `<span class="text-sm text-slate-400 line-through font-black mb-1">${money(p.old)}</span>` : ''}
+        </div>
+        <div class="flex items-center gap-2 mt-3.5 flex-wrap">
+          <span class="text-[11px] px-3 py-1.5 rounded-full font-black ${p.stock>0?'bg-emerald-50 text-emerald-700':'bg-rose-50 text-rose-600'}"><i class="fa-solid ${p.stock>0?'fa-circle-check':'fa-circle-xmark'} mr-1"></i>${p.stock>0?`In Stock (${p.stock})`:'Out of Stock'}</span>
+          <span class="text-[11px] px-3 py-1.5 rounded-full font-black bg-blue-50 text-blue-700"><i class="fa-solid fa-truck-fast mr-1"></i>Delivery ${p.delivery?money(p.delivery):'as per location'}</span>
+        </div>
+      </div>
+      <div class="bg-white mt-2 p-5 fade-up" style="animation-delay:.12s">
+        <h3 class="text-xs font-black text-slate-500 uppercase tracking-widest mb-2">Description</h3>
+        <p class="text-sm text-slate-600 leading-relaxed font-semibold">${nl2br(p.desc)}</p>
+      </div>
+      <div class="bg-white mt-2 p-5 fade-up" style="animation-delay:.18s">
+        <h3 class="text-xs font-black text-slate-500 uppercase tracking-widest mb-3">Quantity</h3>
+        <div class="flex items-center gap-4">
+          <div class="flex items-center bg-slate-100 rounded-2xl overflow-hidden">
+            <button onclick="dQtyChange(-1)" class="press w-11 h-11 active:bg-slate-200 transition"><i class="fa-solid fa-minus text-xs"></i></button>
+            <span id="qty" class="w-14 text-center font-black text-slate-800 text-lg">1</span>
+            <button onclick="dQtyChange(1)" class="press w-11 h-11 active:bg-slate-200 transition"><i class="fa-solid fa-plus text-xs"></i></button>
+          </div>
+          <span class="text-xs font-black text-slate-500">Total: <span id="lineTotal" class="text-emerald-600 font-black">${money(p.price)}</span></span>
+        </div>
+      </div>
+      ${related.length ? `
+        <div class="mt-4">
+          <h3 class="font-black text-slate-900 px-4 mb-3 text-base">You may also like</h3>
+          <div class="flex gap-3 overflow-x-auto scrollx px-4 pb-2">
+            ${related.map(r=>`
+              <div onclick="go('detail',{id:${r.id}})" class="shrink-0 w-[150px] bg-white rounded-3xl overflow-hidden shadow-soft press cursor-pointer">
+                <div class="aspect-square bg-slate-100"><img src="${esc(r.image)}" class="w-full h-full object-cover"></div>
+                <div class="p-3">
+                  <h4 class="text-xs font-black line2 h-8 text-slate-800 leading-snug">${esc(r.name)}</h4>
+                  <span class="text-emerald-600 font-black text-sm block mt-1.5">${money(r.price)}</span>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>` : ''}
+    </div>
+    <div class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] z-30 px-3 pb-3">
+      <div class="glass rounded-3xl shadow-2xl border border-slate-200/60 p-2 flex gap-2">
+        <button onclick="detailAdd(${p.id})" class="press flex-1 bg-white text-emerald-700 border-2 border-emerald-500 py-3.5 rounded-2xl font-black text-sm flex items-center justify-center gap-2"><i class="fa-solid fa-bag-shopping"></i> Add to Cart</button>
+        <button onclick="detailAdd(${p.id},true)" class="press flex-1 btn-grad text-white py-3.5 rounded-2xl font-black text-sm shadow-glow flex items-center justify-center gap-2"><i class="fa-solid fa-bolt"></i> Buy Now</button>
+      </div>
+    </div>
+  `;
+  updateBadges();
+}
+function dQtyChange(n){
+  const p = DB.get('products',[]).find(x=>x.id===state.params.id);
+  dQty = Math.max(1, Math.min(p.stock, dQty + n));
+  $('qty').textContent = dQty; $('lineTotal').textContent = money(p.price * dQty);
+}
+function detailAdd(pid, buyNow=false){ addToCart(pid, dQty, buyNow); if(buyNow) go('cart'); }
+
+function renderCart(){
+  const P = DB.get('products',[]);
+  const items = state.cart.map(c=>({...c, product:P.find(x=>x.id===c.id)})).filter(x=>x.product);
+  const total = cartTotal();
+  const savings = cartSavings();
+  const s = getSettings();
+  $('app').innerHTML = `
+    ${header('My Cart', true)}
+    <div class="pb-56 bg-[#f4f6fb] min-h-screen">
+      ${items.length ? `
+        <div class="p-4">
+          <div class="flex items-center justify-between mb-3">
+            <p class="text-xs font-black text-slate-500">${cartCount()} ITEM${cartCount()>1?'S':''} IN CART</p>
+            <button onclick="if(confirm('Clear cart?')){state.cart=[];saveCart();render()}" class="text-[11px] font-black text-rose-500">Clear All</button>
+          </div>
+          <div class="space-y-3">
+            ${items.map((it,i)=>`
+              <div class="bg-white rounded-3xl p-3 flex gap-3 shadow-soft fade-up" style="animation-delay:${i*0.04}s">
+                <div class="w-20 h-20 rounded-2xl overflow-hidden bg-slate-100 shrink-0"><img src="${esc(it.product.image)}" class="w-full h-full object-cover"></div>
+                <div class="flex-1 min-w-0">
+                  <h3 class="text-sm font-black line2 text-slate-800 leading-snug">${esc(it.product.name)}</h3>
+                  <div class="flex items-baseline gap-2 mt-1.5">
+                    <span class="text-emerald-600 font-black text-base">${money(it.product.price)}</span>
+                    ${it.product.old ? `<span class="text-[10px] text-slate-400 line-through font-black">${money(it.product.old)}</span>` : ''}
+                  </div>
+                  <div class="flex items-center justify-between mt-2">
+                    <div class="flex items-center bg-slate-100 rounded-xl overflow-hidden">
+                      <button onclick="updateCartQty(${it.id}, ${it.qty-1})" class="press w-8 h-8 active:bg-slate-200 transition"><i class="fa-solid fa-minus text-[10px]"></i></button>
+                      <span class="w-9 text-center text-sm font-black">${it.qty}</span>
+                      <button onclick="updateCartQty(${it.id}, ${it.qty+1})" class="press w-8 h-8 active:bg-slate-200 transition"><i class="fa-solid fa-plus text-[10px]"></i></button>
+                    </div>
+                    <button onclick="removeCart(${it.id})" class="press w-8 h-8 rounded-full bg-rose-50 text-rose-500 flex items-center justify-center"><i class="fa-solid fa-trash text-[11px]"></i></button>
+                  </div>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+          <div class="mt-4 bg-white rounded-3xl p-4 shadow-soft fade-up">
+            <h4 class="font-black text-slate-800 mb-3 text-sm">Price Details</h4>
+            <div class="space-y-2.5 text-sm">
+              <div class="flex justify-between"><span class="text-slate-500 font-semibold">Price (${cartCount()} items)</span><span class="font-black text-slate-800">${money(total + savings)}</span></div>
+              ${savings ? `<div class="flex justify-between"><span class="text-slate-500 font-semibold">Discount</span><span class="font-black text-emerald-600">- ${money(savings)}</span></div>` : ''}
+              <div class="flex justify-between"><span class="text-slate-500 font-semibold">Delivery</span><span class="font-black text-emerald-600">At checkout</span></div>
+              <hr class="border-slate-100">
+              <div class="flex justify-between text-base"><span class="font-black text-slate-800">Subtotal</span><span class="font-black text-emerald-600">${money(total)}</span></div>
+            </div>
+            ${s.freeDeliveryThreshold > 0 && total < s.freeDeliveryThreshold ? `<div class="mt-3 bg-amber-50 text-amber-700 text-xs font-black text-center py-2 rounded-xl"><i class="fa-solid fa-truck-fast mr-1"></i> Add ${money(s.freeDeliveryThreshold - total)} more for FREE delivery</div>` : ''}
+          </div>
+        </div>
+      ` : `
+        <div class="text-center py-24 px-6">
+          <div class="w-28 h-28 mx-auto rounded-full bg-white shadow-soft flex items-center justify-center mb-5 fade-up"><i class="fa-solid fa-bag-shopping text-5xl text-slate-300"></i></div>
+          <p class="font-black text-slate-800 text-xl">Your cart is empty</p>
+          <button onclick="go('products')" class="press btn-grad mt-6 text-white px-8 py-3.5 rounded-2xl text-sm font-black shadow-glow"><i class="fa-solid fa-compass mr-1.5"></i> Start Shopping</button>
+        </div>
+      `}
+    </div>
+    ${items.length ? `
+    <div class="fixed bottom-24 left-1/2 -translate-x-1/2 w-full max-w-[480px] z-30 px-4">
+      <div class="bg-white rounded-3xl shadow-2xl p-3.5 flex items-center gap-3 border border-slate-100">
+        <div class="flex-1"><p class="text-[10px] text-slate-400 font-black uppercase tracking-wider">Subtotal</p><p class="text-2xl font-black text-emerald-600 leading-tight">${money(total)}</p></div>
+        <button onclick="go('checkout')" class="press btn-grad text-white px-5 py-3.5 rounded-2xl font-black shadow-glow flex items-center gap-2 text-sm whitespace-nowrap">Checkout <i class="fa-solid fa-arrow-right"></i></button>
+      </div>
+    </div>` : ''}
+    ${bottomNav('cart')}
+  `;
+  updateBadges();
+}
+
+let checkoutLocation = 'inside';
+function renderCheckout(){
+  if(!state.cart.length){ go('cart'); return; }
+  if(!state.user){ toast('Please login','info'); go('login'); return; }
+  const u = state.user;
+  const s = getSettings();
+  const sub = cartTotal();
+  const del = getDeliveryCharge(checkoutLocation);
+  const walletBal = getMyBalance();
+
+  $('app').innerHTML = `
+    ${header('Checkout', true)}
+    <div class="p-4 pb-36 bg-[#f4f6fb] min-h-screen space-y-3">
+      <div class="bg-white rounded-3xl p-4 shadow-soft flex items-center gap-2 fade-up">
+        <div class="flex items-center gap-1.5"><span class="w-6 h-6 rounded-full btn-grad text-white text-[10px] font-black flex items-center justify-center"><i class="fa-solid fa-check text-[9px]"></i></span><span class="text-[11px] font-black text-emerald-600">Cart</span></div>
+        <div class="flex-1 h-0.5 rounded-full bg-emerald-500"></div>
+        <div class="flex items-center gap-1.5"><span class="w-6 h-6 rounded-full btn-grad text-white text-[10px] font-black flex items-center justify-center">2</span><span class="text-[11px] font-black text-emerald-600">Address</span></div>
+        <div class="flex-1 h-0.5 rounded-full bg-slate-200"></div>
+        <div class="flex items-center gap-1.5"><span class="w-6 h-6 rounded-full bg-slate-200 text-slate-400 text-[10px] font-black flex items-center justify-center">3</span><span class="text-[11px] font-black text-slate-400">Pay</span></div>
+      </div>
+      <div class="bg-white rounded-3xl p-5 shadow-soft space-y-4 fade-up" style="animation-delay:.06s">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2.5">
+            <div class="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center"><i class="fa-solid fa-location-dot"></i></div>
+            <div><h3 class="font-black text-slate-800">Delivery Address</h3><p class="text-[10px] text-slate-400 font-bold">From Country settings</p></div>
+          </div>
+          <button onclick="go('country')" class="text-[10px] font-black text-emerald-600 px-2.5 py-1.5 bg-emerald-50 rounded-lg"><i class="fa-solid fa-pen mr-1"></i>Edit</button>
+        </div>
+        ${(u.village||u.upazila||u.district||u.address) ? `
+          <div class="bg-emerald-50 rounded-2xl p-4 border border-emerald-100">
+            <div class="space-y-1.5 text-xs">
+              <p class="flex items-start gap-2"><i class="fa-solid fa-user w-4 text-emerald-600 mt-0.5"></i><b class="text-slate-800">${esc(u.name)}</b></p>
+              <p class="flex items-start gap-2"><i class="fa-solid fa-phone w-4 text-emerald-600 mt-0.5"></i><span class="text-slate-700 font-semibold">${esc(u.phone||'—')}</span></p>
+              ${u.village ? `<p class="flex items-start gap-2"><i class="fa-solid fa-house-chimney w-4 text-emerald-600 mt-0.5"></i><span class="text-slate-700 font-semibold">গ্রাম: ${esc(u.village)}</span></p>` : ''}
+              ${u.upazila ? `<p class="flex items-start gap-2"><i class="fa-solid fa-map-pin w-4 text-emerald-600 mt-0.5"></i><span class="text-slate-700 font-semibold">উপজেলা: ${esc(u.upazila)}</span></p>` : ''}
+              ${u.district ? `<p class="flex items-start gap-2"><i class="fa-solid fa-city w-4 text-emerald-600 mt-0.5"></i><span class="text-slate-700 font-semibold">জেলা: ${esc(u.district)}</span></p>` : ''}
+            </div>
+          </div>
+        ` : `
+          <div class="bg-amber-50 border border-amber-200 rounded-2xl p-4">
+            <p class="text-xs font-black text-amber-700"><i class="fa-solid fa-triangle-exclamation mr-1"></i>Complete your address first</p>
+            <button onclick="go('country')" class="press mt-3 w-full bg-amber-500 text-white py-2.5 rounded-xl text-xs font-black"><i class="fa-solid fa-user-pen mr-1"></i> Complete Now</button>
+          </div>
+        `}
+      </div>
+      <div class="bg-white rounded-3xl p-5 shadow-soft space-y-2.5 fade-up" style="animation-delay:.09s">
+        <div class="flex items-center gap-2.5 mb-2">
+          <div class="w-10 h-10 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center"><i class="fa-solid fa-map-location-dot"></i></div>
+          <div><h3 class="font-black text-slate-800">Delivery Location</h3><p class="text-[10px] text-slate-400 font-bold">Affects delivery charge</p></div>
+        </div>
+        <label class="flex items-center gap-3 p-3.5 rounded-2xl border-2 ${checkoutLocation==='inside'?'border-emerald-500 bg-emerald-50/60':'border-slate-100'} cursor-pointer transition">
+          <input type="radio" name="loc" value="inside" ${checkoutLocation==='inside'?'checked':''} onchange="checkoutLocation='inside';render()" class="accent-emerald-600 w-4 h-4">
+          <div class="flex-1"><p class="text-sm font-black text-slate-800">Inside Dhaka</p><p class="text-[10px] text-slate-500 font-semibold">Standard · ${money(s.deliveryInside)}</p></div>
+          <i class="fa-solid fa-city text-emerald-500"></i>
+        </label>
+        <label class="flex items-center gap-3 p-3.5 rounded-2xl border-2 ${checkoutLocation==='outside'?'border-emerald-500 bg-emerald-50/60':'border-slate-100'} cursor-pointer transition">
+          <input type="radio" name="loc" value="outside" ${checkoutLocation==='outside'?'checked':''} onchange="checkoutLocation='outside';render()" class="accent-emerald-600 w-4 h-4">
+          <div class="flex-1"><p class="text-sm font-black text-slate-800">Outside Dhaka</p><p class="text-[10px] text-slate-500 font-semibold">Nationwide · ${money(s.deliveryOutside)}</p></div>
+          <i class="fa-solid fa-mountain-city text-blue-500"></i>
+        </label>
+      </div>
+      <div class="bg-white rounded-3xl p-5 shadow-soft space-y-2.5 fade-up" style="animation-delay:.12s">
+        <div class="flex items-center justify-between mb-2">
+          <div class="flex items-center gap-2.5">
+            <div class="w-10 h-10 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center"><i class="fa-solid fa-credit-card"></i></div>
+            <div><h3 class="font-black text-slate-800">Payment Method</h3><p class="text-[10px] text-slate-400 font-bold">Wallet: ${money(walletBal)}</p></div>
+          </div>
+          <button onclick="go('wallet')" class="text-[10px] font-black text-violet-600 px-2.5 py-1.5 bg-violet-50 rounded-lg"><i class="fa-solid fa-plus mr-1"></i>Top-up</button>
+        </div>
+        ${[
+          {v:'COD',    label:'Cash on Delivery', sub:'Pay when you receive', icon:'fa-money-bill-wave', color:'emerald'},
+          {v:'BKash',  label:'BKash',            sub:'Mobile banking',       icon:'fa-mobile-screen',   color:'rose'},
+          {v:'Nagad',  label:'Nagad',            sub:'Mobile banking',       icon:'fa-wallet',          color:'orange'},
+          {v:'Wallet', label:'Wallet',           sub:`Balance: ${money(walletBal)}`, icon:'fa-wallet', color:'violet'}
+        ].map((m,i)=>`
+          <label class="flex items-center gap-3 p-3.5 rounded-2xl border-2 border-slate-100 cursor-pointer has-[:checked]:border-emerald-500 has-[:checked]:bg-emerald-50/60 transition ${m.v==='Wallet'&&walletBal<(sub+del)?'opacity-50':''}">
+            <input type="radio" name="pay" value="${m.v}" ${i===0?'checked':''} ${m.v==='Wallet'&&walletBal<(sub+del)?'disabled':''} class="accent-emerald-600 w-4 h-4">
+            <div class="w-9 h-9 rounded-xl bg-${m.color}-50 text-${m.color}-600 flex items-center justify-center"><i class="fa-solid ${m.icon} text-sm"></i></div>
+            <div class="flex-1"><p class="text-sm font-black text-slate-800">${m.label}</p><p class="text-[10px] text-slate-400 font-semibold">${m.sub}</p></div>
+          </label>
+        `).join('')}
+      </div>
+      <div class="bg-white rounded-3xl p-5 shadow-soft fade-up" style="animation-delay:.18s">
+        <h3 class="font-black text-slate-800 mb-3">Order Summary</h3>
+        <div class="space-y-2.5 text-sm">
+          <div class="flex justify-between"><span class="text-slate-500 font-semibold">Subtotal (${cartCount()} items)</span><span class="font-black text-slate-800">${money(sub)}</span></div>
+          <div class="flex justify-between"><span class="text-slate-500 font-semibold">Delivery</span><span class="font-black ${del===0?'text-emerald-600':'text-slate-800'}">${del===0?'FREE':money(del)}</span></div>
+          ${cartSavings() ? `<div class="flex justify-between"><span class="text-slate-500 font-semibold">You Save</span><span class="font-black text-emerald-600">- ${money(cartSavings())}</span></div>` : ''}
+          <hr class="border-slate-100">
+          <div class="flex justify-between text-base"><span class="font-black text-slate-800">Total</span><span class="font-black text-emerald-600">${money(sub + del)}</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] z-30 px-3 pb-3">
+      <div class="glass rounded-3xl shadow-2xl border border-slate-200/60 p-2">
+        <button onclick="submitOrder()" class="press w-full btn-grad text-white py-4 rounded-2xl font-black text-sm shadow-glow flex items-center justify-center gap-2"><i class="fa-solid fa-lock text-xs"></i> Place Order · ${money(sub + del)}</button>
+      </div>
+    </div>
+  `;
+  updateBadges();
+}
+
+function submitOrder(){
+  const u = state.user;
+  if(!u){ toast('Login required','error'); go('login'); return; }
+  if(!u.name || !u.phone || !u.village || !u.upazila || !u.district){ toast('Complete your country/address first','error'); setTimeout(()=>go('country'), 800); return; }
+  const pay = document.querySelector('input[name="pay"]:checked').value;
+  const fullAddr = buildFullAddress(u);
+  const sub = cartTotal();
+  const del = getDeliveryCharge(checkoutLocation);
+  const total = sub + del;
+  if(pay === 'Wallet'){ const bal = getMyBalance(); if(bal < total){ toast('Insufficient wallet balance','error'); return; } }
+  showLoader();
+  setTimeout(()=>{
+    if(pay === 'Wallet'){
+      setMyBalance(getMyBalance() - total);
+      const t = DB.get('transactions',[]);
+      t.unshift({id:uid(t), userId:u.id, userName:u.name, type:'debit', amount:total, note:'Order payment', method:'Wallet', createdAt:new Date().toISOString()});
+      DB.set('transactions', t);
+    }
+    const o = placeOrder({name:u.name, phone:u.phone, village:u.village, upazila:u.upazila, district:u.district, address:u.address, full_address:fullAddr, payment:pay, location:checkoutLocation});
+    showLoader(false);
+    openModal(`
+      <div class="p-7 text-center">
+        <div class="w-20 h-20 mx-auto rounded-full bg-emerald-100 flex items-center justify-center mb-4 pulse-ring"><i class="fa-solid fa-check text-emerald-600 text-3xl"></i></div>
+        <h3 class="font-black text-xl text-slate-900">Order Confirmed!</h3>
+        <p class="text-sm text-slate-500 mt-1 font-semibold">Your order has been placed</p>
+        <div class="mt-5 bg-slate-50 rounded-2xl p-4 text-left space-y-2">
+          <div class="flex justify-between text-xs"><span class="text-slate-500 font-bold">Order ID</span><span class="font-black text-slate-800">#${o.id}</span></div>
+          <div class="flex justify-between text-xs"><span class="text-slate-500 font-bold">Payment</span><span class="font-black text-slate-800">${o.payment}</span></div>
+          <div class="flex justify-between text-xs border-t border-slate-200 pt-2 mt-1"><span class="text-slate-500 font-bold">Total</span><span class="font-black text-emerald-600">${money(o.total)}</span></div>
+        </div>
+        <div class="flex gap-2 mt-5">
+          <button onclick="closeModal();go('orders')" class="press flex-1 btn-grad text-white py-3.5 rounded-2xl font-black text-sm shadow-glow">Track Order</button>
+          <button onclick="closeModal();go('products')" class="press flex-1 bg-slate-100 text-slate-700 py-3.5 rounded-2xl font-black text-sm">Continue</button>
+        </div>
+      </div>
+    `);
+  }, 900);
+}
+
+function renderOrders(){
+  if(!state.user){ go('login'); return; }
+  const all = DB.get('orders',[]).filter(o=>o.user_id === state.user.id);
+  const active = all.filter(o=>o.status!=='Delivered' && o.status!=='Cancelled');
+  const history = all.filter(o=>o.status==='Delivered' || o.status==='Cancelled');
+  const list = state.orderTab==='active' ? active : history;
+  $('app').innerHTML = `
+    ${header('My Orders', true)}
+    <div class="p-4 bg-[#f4f6fb] min-h-screen pb-28">
+      <div class="bg-white rounded-2xl p-1.5 flex mb-4 shadow-soft">
+        <button onclick="state.orderTab='active';render()" class="flex-1 py-3 text-xs font-black rounded-xl transition ${state.orderTab==='active'?'btn-grad text-white shadow-glow':'text-slate-500'}"><i class="fa-solid fa-truck-fast mr-1"></i> Active (${active.length})</button>
+        <button onclick="state.orderTab='history';render()" class="flex-1 py-3 text-xs font-black rounded-xl transition ${state.orderTab==='history'?'btn-grad text-white shadow-glow':'text-slate-500'}"><i class="fa-solid fa-clock-rotate-left mr-1"></i> History (${history.length})</button>
+      </div>
+      ${list.length ? list.map(o=>orderCard(o)).join('') : `
+        <div class="text-center py-20">
+          <div class="w-24 h-24 mx-auto rounded-full bg-white shadow-soft flex items-center justify-center mb-4 fade-up"><i class="fa-solid fa-box-open text-4xl text-slate-300"></i></div>
+          <p class="font-black text-slate-800 text-lg">No ${state.orderTab} orders</p>
+          <button onclick="go('products')" class="press btn-grad mt-5 text-white px-6 py-3 rounded-2xl text-xs font-black shadow-glow">Shop Now</button>
+        </div>`}
+    </div>
+    ${bottomNav('orders')}
+  `;
+  updateBadges();
+}
+function orderCard(o){
+  const first = o.items[0]; const more = o.items.length - 1;
+  const badge = {'Placed':'from-blue-500 to-blue-600','Dispatched':'from-amber-500 to-amber-600','Delivered':'from-emerald-500 to-emerald-600','Cancelled':'from-rose-500 to-rose-600'}[o.status] || 'from-slate-500 to-slate-600';
+  return `
+    <div class="bg-white rounded-3xl shadow-soft mb-3 overflow-hidden fade-up">
+      <div class="p-4">
+        <div class="flex items-center justify-between mb-3">
+          <div class="flex items-center gap-2"><span class="text-[11px] font-black text-slate-800">#${o.id}</span><span class="text-[10px] text-slate-400 font-black">${new Date(o.created_at).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})}</span></div>
+          <span class="text-[10px] px-3 py-1.5 rounded-full bg-gradient-to-br ${badge} text-white font-black">${o.status.toUpperCase()}</span>
+        </div>
+        <div class="flex items-center gap-3">
+          <div class="w-16 h-16 rounded-2xl overflow-hidden bg-slate-100 shrink-0"><img src="${esc(first.image)}" class="w-full h-full object-cover"></div>
+          <div class="flex-1 min-w-0">
+            <p class="text-sm font-black line2 text-slate-800 leading-snug">${esc(first.name)}</p>
+            ${more ? `<p class="text-[11px] text-slate-500 mt-0.5 font-black">+ ${more} more item${more>1?'s':''}</p>` : ''}
+            <p class="text-emerald-600 font-black mt-1">${money(o.total)}</p>
+          </div>
+        </div>
+        <div class="mt-4 pt-4 border-t border-slate-100">${tracker(o.status)}</div>
+      </div>
+      <button onclick="toggleDet(${o.id})" class="w-full px-4 py-3 text-xs font-black text-emerald-600 bg-emerald-50/50 border-t border-slate-100 flex items-center justify-between">
+        <span><i class="fa-solid fa-list-ul mr-1.5"></i> View Details</span>
+        <i class="fa-solid fa-chevron-down transition-transform" id="ch-${o.id}"></i>
+      </button>
+      <div id="dt-${o.id}" class="hidden px-4 pb-4 text-xs bg-slate-50/50 space-y-2.5">
+        <div class="pt-3 space-y-1.5">
+          <p><b class="text-slate-700 font-black">Name:</b> <span class="text-slate-600 font-semibold">${esc(o.user_name)}</span></p>
+          <p><b class="text-slate-700 font-black">Phone:</b> <span class="text-slate-600 font-semibold">${esc(o.phone)}</span></p>
+          ${o.village ? `<p><b class="text-slate-700 font-black">গ্রাম:</b> <span class="text-slate-600 font-semibold">${esc(o.village)}</span></p>` : ''}
+          ${o.upazila ? `<p><b class="text-slate-700 font-black">উপজেলা:</b> <span class="text-slate-600 font-semibold">${esc(o.upazila)}</span></p>` : ''}
+          ${o.district ? `<p><b class="text-slate-700 font-black">জেলা:</b> <span class="text-slate-600 font-semibold">${esc(o.district)}</span></p>` : ''}
+          <p><b class="text-slate-700 font-black">Payment:</b> <span class="text-slate-600 font-semibold">${esc(o.payment)}</span></p>
+        </div>
+        <hr class="border-slate-200">
+        ${o.items.map(i=>`
+          <div class="flex items-center gap-2.5 py-1">
+            <img src="${esc(i.image)}" class="w-11 h-11 rounded-xl object-cover bg-white">
+            <span class="flex-1 line2 font-black text-slate-700">${esc(i.name)}</span>
+            <span class="text-[11px] font-black text-slate-400">×${i.qty}</span>
+            <span class="font-black text-emerald-600">${money(i.price*i.qty)}</span>
+          </div>
+        `).join('')}
+        <hr class="border-slate-200">
+        <div class="flex justify-between pt-1"><span class="font-black text-slate-700">Total</span><span class="font-black text-emerald-600">${money(o.total)}</span></div>
+      </div>
+    </div>`;
+}
+function toggleDet(id){ const d = $('dt-'+id), c = $('ch-'+id); d.classList.toggle('hidden'); c.style.transform = d.classList.contains('hidden') ? '' : 'rotate(180deg)'; }
+function tracker(status){
+  if(status === 'Cancelled') return `<div class="flex items-center gap-2.5 bg-rose-50 text-rose-600 rounded-2xl px-3.5 py-3 text-sm font-black"><i class="fa-solid fa-circle-xmark"></i> Order Cancelled</div>`;
+  const steps = ['Placed','Dispatched','Delivered'];
+  const icons = ['fa-clipboard-check','fa-truck-fast','fa-circle-check'];
+  const idx = Math.max(0, steps.indexOf(status));
+  let h = '<div class="flex items-start">';
+  steps.forEach((s,i)=>{
+    const done = i <= idx;
+    h += `<div class="flex flex-col items-center" style="width:56px"><div class="w-9 h-9 rounded-full flex items-center justify-center text-xs ${done ? 'btn-grad text-white shadow-glow' : 'bg-slate-100 text-slate-400'}"><i class="fa-solid ${icons[i]}"></i></div><span class="text-[10px] mt-1.5 font-black ${done ? 'text-emerald-700' : 'text-slate-400'}">${s}</span></div>`;
+    if(i < steps.length-1) h += `<div class="flex-1 h-1 rounded-full mt-4 ${i<idx ? 'bg-gradient-to-r from-emerald-500 to-emerald-600' : 'bg-slate-200'}"></div>`;
+  });
+  return h + '</div>';
+}
+
+function renderProfile(){
+  if(!state.user){ go('login'); return; }
+  const u = state.user;
+  const orders = DB.get('orders',[]).filter(o=>o.user_id===u.id);
+  const spent = orders.filter(o=>o.status!=='Cancelled').reduce((s,o)=>s+o.total,0);
+  const wallet = getMyBalance();
+  const hasAddress = u.village && u.upazila && u.district;
+  $('app').innerHTML = `
+    ${header('My Profile', true)}
+    <div class="p-4 space-y-4 pb-28 bg-[#f4f6fb] min-h-screen">
+      <div class="hero-grad rounded-3xl p-5 text-white shadow-glow relative overflow-hidden fade-up">
+        <div class="absolute -top-10 -right-10 w-36 h-36 rounded-full bg-white/10"></div>
+        <div class="absolute -bottom-10 -left-10 w-28 h-28 rounded-full bg-white/10"></div>
+        <div class="relative flex items-center gap-4">
+          <div class="w-16 h-16 rounded-3xl bg-white/25 backdrop-blur flex items-center justify-center text-2xl font-black shadow-lg">${esc((u.name[0]||'U').toUpperCase())}</div>
+          <div class="flex-1 min-w-0">
+            <h2 class="font-black text-lg truncate">${esc(u.name)}</h2>
+            <p class="text-[11px] text-emerald-100 mt-0.5 font-black"><i class="fa-solid fa-phone mr-1"></i>${esc(u.phone||'—')}</p>
+            ${hasAddress ? `<p class="text-[10px] text-emerald-200 mt-0.5 font-semibold truncate"><i class="fa-solid fa-location-dot mr-1"></i>${esc(u.village)}, ${esc(u.upazila)}, ${esc(u.district)}</p>` : `<p class="text-[10px] text-amber-200 mt-0.5 font-black"><i class="fa-solid fa-triangle-exclamation mr-1"></i>Complete address</p>`}
+          </div>
+        </div>
+        <div class="relative grid grid-cols-3 gap-2 mt-5">
+          <div class="bg-white/15 backdrop-blur rounded-2xl p-2.5 text-center"><p class="text-lg font-black">${orders.length}</p><p class="text-[9px] text-emerald-100 font-black tracking-widest mt-0.5">ORDERS</p></div>
+          <div class="bg-white/15 backdrop-blur rounded-2xl p-2.5 text-center"><p class="text-lg font-black">${money(spent)}</p><p class="text-[9px] text-emerald-100 font-black tracking-widest mt-0.5">SPENT</p></div>
+          <div class="bg-white/15 backdrop-blur rounded-2xl p-2.5 text-center"><p class="text-lg font-black">${money(wallet)}</p><p class="text-[9px] text-emerald-100 font-black tracking-widest mt-0.5">WALLET</p></div>
+        </div>
+      </div>
+      ${!hasAddress ? `<div class="bg-amber-50 border border-amber-200 rounded-3xl p-4 flex items-start gap-3 fade-up"><div class="w-10 h-10 rounded-2xl bg-amber-500 text-white flex items-center justify-center shrink-0"><i class="fa-solid fa-triangle-exclamation"></i></div><div class="flex-1"><p class="text-xs font-black text-amber-700">Address Incomplete</p><p class="text-[11px] text-amber-600 font-semibold mt-0.5">Set your country/address for delivery</p></div></div>` : ''}
+      <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1 mt-2">Account Settings</p>
+      <div class="space-y-3">
+        <div onclick="go('wallet')" class="bg-white rounded-3xl p-4 shadow-soft press cursor-pointer flex items-center gap-4 fade-up relative overflow-hidden">
+          <div class="absolute top-0 right-0 w-32 h-32 wallet-grad opacity-10 rounded-full -translate-y-16 translate-x-16"></div>
+          <div class="w-14 h-14 rounded-2xl wallet-grad flex items-center justify-center text-white shadow-glow-violet shrink-0 relative"><i class="fa-solid fa-wallet text-xl"></i></div>
+          <div class="flex-1 min-w-0 relative"><h3 class="font-black text-slate-800 text-sm">My Wallet</h3><p class="text-[11px] text-slate-500 font-semibold mt-0.5">Balance: <b class="text-violet-600 font-black">${money(wallet)}</b></p><p class="text-[10px] text-slate-400 font-bold mt-0.5">Deposit via Nagad, BKash, Bank</p></div>
+          <i class="fa-solid fa-chevron-right text-slate-300"></i>
+        </div>
+        <div onclick="go('country')" class="bg-white rounded-3xl p-4 shadow-soft press cursor-pointer flex items-center gap-4 fade-up relative overflow-hidden" style="animation-delay:.06s">
+          <div class="absolute top-0 right-0 w-32 h-32 btn-grad-blue opacity-10 rounded-full -translate-y-16 translate-x-16"></div>
+          <div class="w-14 h-14 rounded-2xl btn-grad-blue flex items-center justify-center text-white shadow-glow-blue shrink-0 relative"><i class="fa-solid fa-globe text-xl"></i></div>
+          <div class="flex-1 min-w-0 relative"><h3 class="font-black text-slate-800 text-sm">Country / Address</h3><p class="text-[11px] text-slate-500 font-semibold mt-0.5">নাম, ফোন, গ্রাম, উপজেলা, জেলা</p><p class="text-[10px] text-slate-400 font-bold mt-0.5">Delivery information</p></div>
+          ${hasAddress ? `<i class="fa-solid fa-circle-check text-emerald-500"></i>` : `<i class="fa-solid fa-chevron-right text-slate-300"></i>`}
+        </div>
+        <div onclick="go('security')" class="bg-white rounded-3xl p-4 shadow-soft press cursor-pointer flex items-center gap-4 fade-up relative overflow-hidden" style="animation-delay:.12s">
+          <div class="absolute top-0 right-0 w-32 h-32 btn-grad-dark opacity-10 rounded-full -translate-y-16 translate-x-16"></div>
+          <div class="w-14 h-14 rounded-2xl btn-grad-dark flex items-center justify-center text-white shadow-xl shrink-0 relative"><i class="fa-solid fa-shield-halved text-xl"></i></div>
+          <div class="flex-1 min-w-0 relative"><h3 class="font-black text-slate-800 text-sm">Security & Privacy</h3><p class="text-[11px] text-slate-500 font-semibold mt-0.5">Password change</p><p class="text-[10px] text-slate-400 font-bold mt-0.5">Keep your account secure</p></div>
+          <i class="fa-solid fa-chevron-right text-slate-300"></i>
+        </div>
+        <div onclick="go('ai_chat')" class="bg-white rounded-3xl p-4 shadow-soft press cursor-pointer flex items-center gap-4 fade-up relative overflow-hidden" style="animation-delay:.18s">
+          <div class="absolute top-0 right-0 w-32 h-32 ai-grad opacity-10 rounded-full -translate-y-16 translate-x-16"></div>
+          <div class="w-14 h-14 ai-grad rounded-2xl flex items-center justify-center text-white shadow-glow-violet shrink-0 relative"><i class="fa-solid fa-robot text-xl"></i><span class="absolute -top-1 -right-1 w-3 h-3 bg-emerald-400 rounded-full border-2 border-white pulse-dot"></span></div>
+          <div class="flex-1 min-w-0 relative"><h3 class="font-black text-slate-800 text-sm">AI Assistant</h3><p class="text-[11px] text-slate-500 font-semibold mt-0.5">চ্যাট করুন, সব কিছু জানুন</p><p class="text-[10px] text-slate-400 font-bold mt-0.5">Step-by-step guide</p></div>
+          <i class="fa-solid fa-chevron-right text-slate-300"></i>
+        </div>
+      </div>
+      <button onclick="logout()" class="press w-full bg-white border-2 border-rose-200 text-rose-600 py-4 rounded-2xl font-black shadow-soft fade-up" style="animation-delay:.24s"><i class="fa-solid fa-right-from-bracket mr-1.5"></i> Logout</button>
+    </div>
+    ${bottomNav('profile')}
+  `;
+}
+
+function renderWallet(){
+  if(!state.user){ go('login'); return; }
+  const bal = getMyBalance();
+  const txns = getMyTransactions();
+  const deposits = getMyDeposits();
+  const pi = getPaymentInfo();
+  $('app').innerHTML = `
+    ${header('My Wallet', true)}
+    <div class="pb-28 bg-[#f4f6fb] min-h-screen">
+      <div class="p-4">
+        <div class="wallet-grad rounded-[28px] p-6 text-white shadow-glow-violet relative overflow-hidden fade-up">
+          <div class="absolute -top-10 -right-10 w-40 h-40 rounded-full bg-white/10"></div>
+          <div class="absolute -bottom-12 -left-8 w-32 h-32 rounded-full bg-white/10"></div>
+          <div class="wallet-card-sheen"></div>
+          <div class="absolute top-6 right-6 float opacity-90"><i class="fa-solid fa-wallet text-5xl text-white/20"></i></div>
+          <div class="relative">
+            <p class="text-[10px] font-black text-violet-200 tracking-widest">WALLET BALANCE</p>
+            <h2 class="text-4xl font-black mt-2">${money(bal)}</h2>
+            <p class="text-[11px] text-violet-100 mt-1.5 font-semibold"><i class="fa-solid fa-shield-halved mr-1"></i>Secured by KHF Pay</p>
+            <div class="flex gap-2 mt-4">
+              <button onclick="go('wallet_deposit')" class="press bg-white text-violet-700 font-black text-xs px-4 py-2.5 rounded-2xl shadow-lg flex items-center gap-2"><i class="fa-solid fa-plus"></i> Deposit</button>
+              <button onclick="go('wallet_history')" class="press bg-white/20 backdrop-blur text-white font-black text-xs px-4 py-2.5 rounded-2xl border border-white/30 flex items-center gap-2"><i class="fa-solid fa-clock-rotate-left"></i> History</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="px-4">
+        <div class="grid grid-cols-3 gap-3">
+          <div onclick="${pi.bkash.enabled ? "state.walletMethod='bkash';go('wallet_deposit')" : "toast('BKash currently unavailable','info')"}" class="bg-white rounded-3xl p-4 shadow-soft text-center press cursor-pointer fade-up relative ${!pi.bkash.enabled?'opacity-50':''}">
+            <div class="w-11 h-11 mx-auto rounded-2xl bg-gradient-to-br from-rose-400 to-rose-600 text-white flex items-center justify-center shadow-lg"><i class="fa-solid fa-mobile-screen"></i></div>
+            <p class="text-[10px] font-black text-slate-700 mt-2">BKash</p>
+            ${!pi.bkash.enabled ? '<span class="absolute top-1 right-1 text-[8px] font-black text-rose-500 bg-rose-50 px-1.5 py-0.5 rounded-full">OFF</span>' : ''}
+          </div>
+          <div onclick="${pi.nagad.enabled ? "state.walletMethod='nagad';go('wallet_deposit')" : "toast('Nagad currently unavailable','info')"}" class="bg-white rounded-3xl p-4 shadow-soft text-center press cursor-pointer fade-up relative ${!pi.nagad.enabled?'opacity-50':''}" style="animation-delay:.06s">
+            <div class="w-11 h-11 mx-auto rounded-2xl bg-gradient-to-br from-orange-400 to-orange-600 text-white flex items-center justify-center shadow-lg"><i class="fa-solid fa-wallet"></i></div>
+            <p class="text-[10px] font-black text-slate-700 mt-2">Nagad</p>
+            ${!pi.nagad.enabled ? '<span class="absolute top-1 right-1 text-[8px] font-black text-rose-500 bg-rose-50 px-1.5 py-0.5 rounded-full">OFF</span>' : ''}
+          </div>
+          <div onclick="${pi.bank.enabled ? "state.walletMethod='bank';go('wallet_deposit')" : "toast('Bank currently unavailable','info')"}" class="bg-white rounded-3xl p-4 shadow-soft text-center press cursor-pointer fade-up relative ${!pi.bank.enabled?'opacity-50':''}" style="animation-delay:.12s">
+            <div class="w-11 h-11 mx-auto rounded-2xl bg-gradient-to-br from-blue-400 to-blue-600 text-white flex items-center justify-center shadow-lg"><i class="fa-solid fa-building-columns"></i></div>
+            <p class="text-[10px] font-black text-slate-700 mt-2">Bank</p>
+            ${!pi.bank.enabled ? '<span class="absolute top-1 right-1 text-[8px] font-black text-rose-500 bg-rose-50 px-1.5 py-0.5 rounded-full">OFF</span>' : ''}
+          </div>
+        </div>
+      </div>
+      ${deposits.filter(d=>d.status==='pending').length ? `
+      <div class="px-4 mt-5">
+        <h3 class="font-black text-slate-800 text-sm mb-2">Pending Deposits</h3>
+        ${deposits.filter(d=>d.status==='pending').map(d=>`
+          <div class="bg-amber-50 border border-amber-200 rounded-2xl p-3 mb-2 flex items-center gap-3 fade-up">
+            <div class="w-10 h-10 rounded-2xl bg-amber-500 text-white flex items-center justify-center"><i class="fa-solid fa-clock"></i></div>
+            <div class="flex-1 min-w-0">
+              <p class="font-black text-slate-800 text-xs">${d.method.toUpperCase()} · ${money(d.amount)}</p>
+              <p class="text-[10px] text-amber-700 font-bold">${d.methodType ? d.methodType + ' · ' : ''}Waiting for admin approval</p>
+            </div>
+            <span class="text-[10px] font-black text-amber-700 bg-amber-100 px-2 py-1 rounded-full">PENDING</span>
+          </div>
+        `).join('')}
+      </div>` : ''}
+      <div class="px-4 mt-5">
+        <div class="flex items-center justify-between mb-2">
+          <h3 class="font-black text-slate-800 text-sm">Recent Activity</h3>
+          ${txns.length ? `<button onclick="go('wallet_history')" class="text-[10px] font-black text-violet-600">See All</button>` : ''}
+        </div>
+        ${txns.length ? txns.slice(0,5).map(t=>`
+          <div class="bg-white rounded-2xl p-3 mb-2 flex items-center gap-3 shadow-soft fade-up">
+            <div class="w-10 h-10 rounded-2xl ${t.type==='debit'?'bg-rose-50 text-rose-600':'bg-emerald-50 text-emerald-600'} flex items-center justify-center"><i class="fa-solid ${t.type==='debit'?'fa-arrow-up':'fa-arrow-down'}"></i></div>
+            <div class="flex-1 min-w-0">
+              <p class="font-black text-slate-800 text-xs">${esc(t.note||'Transaction')}</p>
+              <p class="text-[10px] text-slate-400 font-bold">${esc(t.method||'')} · ${new Date(t.createdAt).toLocaleDateString()}</p>
+            </div>
+            <span class="font-black text-sm ${t.type==='debit'?'text-rose-600':'text-emerald-600'}">${t.type==='debit'?'-':'+'}${money(t.amount)}</span>
+          </div>
+        `).join('') : `
+          <div class="text-center py-12 bg-white rounded-3xl shadow-soft">
+            <i class="fa-solid fa-receipt text-3xl text-slate-300 mb-2"></i>
+            <p class="font-black text-slate-600 text-sm">No transactions yet</p>
+            <p class="text-[11px] text-slate-400 mt-1 font-semibold">Deposit money to get started</p>
+          </div>
+        `}
+      </div>
+    </div>
+    ${bottomNav('profile')}
+  `;
+}
+
+function renderWalletDeposit(){
+  if(!state.user){ go('login'); return; }
+  const pi = getPaymentInfo();
+  const method = state.walletMethod;
+  const enabledMethods = ['bkash','nagad','bank'].filter(k => pi[k] && pi[k].enabled);
+  if(!enabledMethods.length){
+    $('app').innerHTML = `
+      ${header('Deposit Money', true)}
+      <div class="p-6 text-center min-h-[80vh] flex flex-col items-center justify-center">
+        <div class="w-24 h-24 rounded-full bg-slate-100 flex items-center justify-center mb-4">
+          <i class="fa-solid fa-circle-exclamation text-4xl text-slate-400"></i>
+        </div>
+        <h3 class="font-black text-xl text-slate-800">Deposits Unavailable</h3>
+        <p class="text-sm text-slate-500 mt-2 font-semibold">Deposit methods are temporarily disabled.</p>
+        <button onclick="go('wallet')" class="press btn-grad mt-6 text-white px-6 py-3 rounded-2xl text-sm font-black shadow-glow">Back to Wallet</button>
+      </div>
+      ${bottomNav('profile')}
+    `;
+    return;
+  }
+  if(!pi[method] || !pi[method].enabled){
+    state.walletMethod = enabledMethods[0];
+    renderWalletDeposit();
+    return;
+  }
+
+  const m = pi[method];
+  const methodLabel = {bkash:'BKash', nagad:'Nagad', bank:'Bank'}[method];
+  const color = {bkash:'rose', nagad:'orange', bank:'blue'}[method];
+  const icon = {bkash:'fa-mobile-screen', nagad:'fa-wallet', bank:'fa-building-columns'}[method];
+
+  let infoBlock = '';
+  if(method === 'bank'){
+    infoBlock = `
+      <div class="bg-white/70 rounded-2xl p-3 space-y-2">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Bank Name</p>
+            <p class="font-black text-slate-800 text-sm">${esc(m.bankName)}</p>
+          </div>
+          <button onclick="copyText('${esc(m.bankName)}', this)" class="press text-[10px] font-black text-blue-600 px-2.5 py-1.5 bg-blue-100 rounded-lg"><i class="fa-solid fa-copy mr-1"></i>Copy</button>
+        </div>
+        <div class="h-px bg-slate-200"></div>
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Account Number</p>
+            <p class="font-black text-slate-800 text-base tracking-wider">${esc(m.accountNumber)}</p>
+          </div>
+          <button onclick="copyText('${esc(m.accountNumber)}', this)" class="press text-[10px] font-black text-blue-600 px-2.5 py-1.5 bg-blue-100 rounded-lg"><i class="fa-solid fa-copy mr-1"></i>Copy</button>
+        </div>
+        <div class="h-px bg-slate-200"></div>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Account Holder</p>
+            <p class="font-black text-slate-800 text-xs">${esc(m.accountHolder)}</p>
+          </div>
+          <div>
+            <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Branch</p>
+            <p class="font-black text-slate-800 text-xs">${esc(m.branch)}</p>
+          </div>
+        </div>
+        ${m.routingNumber ? `
+          <div class="h-px bg-slate-200"></div>
+          <div>
+            <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Routing Number</p>
+            <p class="font-black text-slate-800 text-sm">${esc(m.routingNumber)}</p>
+          </div>` : ''}
+      </div>
+    `;
+  } else {
+    infoBlock = `
+      <div class="bg-white/70 rounded-2xl p-3 space-y-2">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest">${esc(methodLabel)} Number</p>
+            <p class="font-black text-slate-800 text-base tracking-wider">${esc(m.number)}</p>
+          </div>
+          <button onclick="copyText('${esc(m.number)}', this)" class="press text-[10px] font-black text-${color}-600 px-2.5 py-1.5 bg-${color}-100 rounded-lg"><i class="fa-solid fa-copy mr-1"></i>Copy</button>
+        </div>
+        <div class="h-px bg-slate-200"></div>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Method</p>
+            <p class="font-black text-slate-800 text-xs">${esc(m.method)}</p>
+          </div>
+          <div>
+            <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Account Type</p>
+            <p class="font-black text-slate-800 text-xs">${esc(m.accountType)}</p>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  const stepOneText = method === 'bank'
+    ? `উপরে দেখানো <b>একাউন্টে ট্রান্সফার</b> করুন`
+    : `উপরে দেখানো <b>নম্বরে ${esc(m.method)}</b> করুন`;
+
+  $('app').innerHTML = `
+    ${header('Deposit Money', true)}
+    <div class="p-4 pb-32 bg-[#f4f6fb] min-h-screen space-y-4">
+      <div class="bg-white rounded-3xl p-4 shadow-soft fade-up">
+        <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3">Select Payment Method</p>
+        <div class="grid grid-cols-3 gap-2">
+          ${['bkash','nagad','bank'].map(k=>{
+            const info = pi[k];
+            const on = method === k;
+            const disabled = !info.enabled;
+            const kColor = {bkash:'rose', nagad:'orange', bank:'blue'}[k];
+            const kIcon = {bkash:'fa-mobile-screen', nagad:'fa-wallet', bank:'fa-building-columns'}[k];
+            return `
+              <button onclick="${disabled ? `toast('Currently unavailable','info')` : `state.walletMethod='${k}';renderWalletDeposit()`}" class="press rounded-2xl p-3 border-2 transition ${on?'border-violet-500 bg-violet-50':'border-slate-100 bg-slate-50'} ${disabled?'opacity-40':''}">
+                <div class="w-10 h-10 mx-auto rounded-xl bg-${kColor}-500 text-white flex items-center justify-center shadow-lg">
+                  <i class="fa-solid ${kIcon}"></i>
+                </div>
+                <p class="text-[10px] font-black text-slate-700 mt-2">${k==='bkash'?'BKash':k==='nagad'?'Nagad':'Bank'}</p>
+              </button>`;
+          }).join('')}
+        </div>
+      </div>
+      <div class="bg-gradient-to-br from-${color}-50 to-${color}-100 rounded-3xl p-5 border border-${color}-200 fade-up" style="animation-delay:.06s">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-11 h-11 rounded-2xl bg-${color}-500 text-white flex items-center justify-center shadow-lg">
+            <i class="fa-solid ${icon}"></i>
+          </div>
+          <div>
+            <p class="text-[10px] font-black text-${color}-700 uppercase tracking-widest">${method==='bank'?'Bank Info':'Send Money To'}</p>
+            <p class="font-black text-slate-800 text-sm">${methodLabel}</p>
+          </div>
+        </div>
+        ${infoBlock}
+        <div class="mt-3 flex items-start gap-2 bg-white/60 rounded-2xl p-3">
+          <i class="fa-solid fa-circle-info text-${color}-600 mt-0.5"></i>
+          <div class="text-[11px] text-slate-700 font-semibold leading-relaxed">
+            <b>Step 1:</b> ${stepOneText}।<br>
+            <b>Step 2:</b> নিচের ফর্মে ট্রানজেকশন আইডি ও টাকার পরিমাণ দিন।<br>
+            <b>Step 3:</b> ${pi.autoApprove ? 'তাৎক্ষণিক ব্যালেন্স যোগ হবে ⚡' : 'অ্যাডমিন অ্যাপ্রুভ করলে ব্যালেন্স যোগ হবে।'}
+          </div>
+        </div>
+        ${m.instructions ? `
+          <div class="mt-2 bg-amber-50 rounded-2xl p-3 border border-amber-100">
+            <p class="text-[10px] font-black text-amber-700 uppercase tracking-widest mb-1"><i class="fa-solid fa-star mr-1"></i> Important</p>
+            <p class="text-[11px] text-amber-800 font-semibold leading-relaxed">${esc(m.instructions)}</p>
+          </div>` : ''}
+      </div>
+      <div class="bg-white rounded-3xl p-5 shadow-soft space-y-3 fade-up" style="animation-delay:.12s">
+        <h3 class="font-black text-slate-800 text-sm mb-2">Deposit Details</h3>
+        <div>
+          <label class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Amount (৳) <span class="text-rose-500">*</span></label>
+          <input id="depAmount" type="number" placeholder="Min ${money(pi.minDeposit)}" class="inp w-full mt-1.5 rounded-2xl px-4 py-3.5 text-sm font-black">
+          <div class="flex gap-2 mt-2">
+            ${[100,500,1000,2000].map(a=>`
+              <button onclick="document.getElementById('depAmount').value=${a}" class="press flex-1 bg-slate-100 text-slate-700 py-2 rounded-xl text-[11px] font-black">৳${a}</button>
+            `).join('')}
+          </div>
+          <p class="text-[10px] text-slate-400 font-bold mt-1.5">Minimum: ${money(pi.minDeposit)}</p>
+        </div>
+        <div>
+          <label class="text-[10px] font-black text-slate-500 uppercase tracking-widest">${method==='bank'?'Reference / Slip No.':'Transaction ID (TrxID)'} <span class="text-rose-500">*</span></label>
+          <input id="depTxn" placeholder="${method==='bank'?'e.g. 98765432':'e.g. 8XY2K9LM'}" class="inp w-full mt-1.5 rounded-2xl px-4 py-3.5 text-sm font-semibold">
+        </div>
+        <div>
+          <label class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Your ${method==='bank'?'Account Number':'Mobile Number'}</label>
+          <input id="depSender" value="${esc(state.user.phone||'')}" class="inp w-full mt-1.5 rounded-2xl px-4 py-3.5 text-sm font-semibold">
+        </div>
+        <button onclick="doDeposit()" class="press w-full wallet-grad text-white py-4 rounded-2xl font-black shadow-glow-violet flex items-center justify-center gap-2 mt-2">
+          <i class="fa-solid fa-paper-plane"></i> Submit Deposit Request
+        </button>
+      </div>
+    </div>
+    ${bottomNav('profile')}
+  `;
+}
+
+function doDeposit(){
+  const pi = getPaymentInfo();
+  const method = state.walletMethod;
+  const methodLabel = {bkash:'BKash', nagad:'Nagad', bank:'Bank'}[method];
+  const methodType = method === 'bank' ? 'Bank Transfer' : pi[method].method;
+  const amount = +$('depAmount').value;
+  const txnId = $('depTxn').value.trim();
+  const sender = $('depSender').value.trim();
+  if(!amount || amount < pi.minDeposit){ toast(`Minimum deposit ${money(pi.minDeposit)}`,'error'); return; }
+  if(!txnId){ toast('Enter transaction ID','error'); return; }
+  if(!sender){ toast('Enter your number','error'); return; }
+  showLoader();
+  setTimeout(()=>{
+    const d = submitDeposit(method, amount, txnId, sender, methodType);
+    if(pi.autoApprove){
+      const wallets = getWallets();
+      const currentBal = wallets[state.user.id] || 0;
+      setMyBalance(currentBal + amount);
+      const t = DB.get('transactions',[]);
+      t.unshift({id:uid(t), userId: state.user.id, userName: state.user.name, type:'deposit', amount, note:`Wallet deposit via ${methodType}`, method, balanceBefore: currentBal, balanceAfter: currentBal + amount, createdAt: new Date().toISOString()});
+      DB.set('transactions', t);
+      const deps = getDeposits();
+      const idx = deps.findIndex(x=>x.id === d.id);
+      if(idx > -1){ deps[idx].status = 'approved'; deps[idx].reviewedAt = new Date().toISOString(); }
+      DB.set('deposits', deps);
+    }
+    showLoader(false);
+    const finalStatus = pi.autoApprove ? 'approved' : 'pending';
+    openModal(`
+      <div class="p-7 text-center">
+        <div class="w-20 h-20 mx-auto rounded-full ${pi.autoApprove ? 'bg-emerald-100 pulse-ring' : 'bg-amber-100 pulse-ring'} flex items-center justify-center mb-4">
+          <i class="fa-solid ${pi.autoApprove ? 'fa-check text-emerald-600' : 'fa-clock text-amber-600'} text-3xl"></i>
+        </div>
+        <h3 class="font-black text-xl text-slate-900">${pi.autoApprove ? 'Deposit Successful!' : 'Deposit Submitted!'}</h3>
+        <p class="text-sm text-slate-500 mt-1 font-semibold">${pi.autoApprove ? 'আপনার ব্যালেন্সে টাকা যোগ হয়েছে' : 'অ্যাডমিন ভেরিফাই করলে ব্যালেন্স যোগ হবে'}</p>
+        <div class="mt-5 bg-slate-50 rounded-2xl p-4 text-left space-y-2">
+          <div class="flex justify-between text-xs"><span class="text-slate-500 font-bold">Amount</span><span class="font-black text-slate-800">${money(amount)}</span></div>
+          <div class="flex justify-between text-xs"><span class="text-slate-500 font-bold">Method</span><span class="font-black text-slate-800">${methodLabel}</span></div>
+          <div class="flex justify-between text-xs"><span class="text-slate-500 font-bold">Type</span><span class="font-black text-slate-800">${esc(methodType)}</span></div>
+          <div class="flex justify-between text-xs"><span class="text-slate-500 font-bold">TrxID</span><span class="font-black text-slate-800">${esc(txnId)}</span></div>
+          <div class="flex justify-between text-xs border-t border-slate-200 pt-2 mt-1"><span class="text-slate-500 font-bold">Status</span><span class="font-black ${pi.autoApprove ? 'text-emerald-600' : 'text-amber-600'}">${finalStatus.toUpperCase()}</span></div>
+        </div>
+        <button onclick="closeModal();go('wallet')" class="press w-full mt-5 wallet-grad text-white py-3.5 rounded-2xl font-black shadow-glow-violet">
+          Back to Wallet
+        </button>
+      </div>
+    `);
+  }, 800);
+}
+
+function renderWalletHistory(){
+  if(!state.user){ go('login'); return; }
+  const txns = getMyTransactions();
+  const deposits = getMyDeposits();
+  $('app').innerHTML = `
+    ${header('Wallet History', true)}
+    <div class="p-4 pb-28 bg-[#f4f6fb] min-h-screen">
+      <div class="bg-white rounded-2xl p-1.5 flex mb-4 shadow-soft">
+        <button onclick="state.walletTab='all';render()" class="flex-1 py-3 text-xs font-black rounded-xl transition ${state.walletTab==='all'?'wallet-grad text-white shadow-glow-violet':'text-slate-500'}">All</button>
+        <button onclick="state.walletTab='txns';render()" class="flex-1 py-3 text-xs font-black rounded-xl transition ${state.walletTab==='txns'?'wallet-grad text-white shadow-glow-violet':'text-slate-500'}">Transactions</button>
+        <button onclick="state.walletTab='deposits';render()" class="flex-1 py-3 text-xs font-black rounded-xl transition ${state.walletTab==='deposits'?'wallet-grad text-white shadow-glow-violet':'text-slate-500'}">Deposits</button>
+      </div>
+      ${state.walletTab==='txns' || state.walletTab==='all' ? `
+        <h3 class="font-black text-slate-800 text-sm mb-2 px-1">Transactions</h3>
+        ${txns.length ? txns.map(t=>`
+          <div class="bg-white rounded-2xl p-3 mb-2 flex items-center gap-3 shadow-soft fade-up">
+            <div class="w-11 h-11 rounded-2xl ${t.type==='debit'?'bg-rose-50 text-rose-600':'bg-emerald-50 text-emerald-600'} flex items-center justify-center shrink-0"><i class="fa-solid ${t.type==='debit'?'fa-arrow-up':'fa-arrow-down'}"></i></div>
+            <div class="flex-1 min-w-0">
+              <p class="font-black text-slate-800 text-xs">${esc(t.note||'Transaction')}</p>
+              <p class="text-[10px] text-slate-400 font-bold mt-0.5">${esc(t.method||'')} · ${new Date(t.createdAt).toLocaleString()}</p>
+            </div>
+            <span class="font-black text-sm ${t.type==='debit'?'text-rose-600':'text-emerald-600'}">${t.type==='debit'?'-':'+'}${money(t.amount)}</span>
+          </div>
+        `).join('') : `<div class="text-center py-8 bg-white rounded-3xl shadow-soft mb-4"><i class="fa-solid fa-receipt text-2xl text-slate-300 mb-2"></i><p class="text-xs font-black text-slate-500">No transactions</p></div>`}
+      ` : ''}
+      ${state.walletTab==='deposits' || state.walletTab==='all' ? `
+        <h3 class="font-black text-slate-800 text-sm mb-2 px-1 mt-4">Deposit Requests</h3>
+        ${deposits.length ? deposits.map(d=>{
+          const st = d.status === 'approved' ? {c:'emerald', t:'APPROVED', i:'fa-circle-check'} : d.status === 'rejected' ? {c:'rose', t:'REJECTED', i:'fa-circle-xmark'} : {c:'amber', t:'PENDING', i:'fa-clock'};
+          return `
+            <div class="bg-white rounded-2xl p-3 mb-2 shadow-soft fade-up">
+              <div class="flex items-center gap-3">
+                <div class="w-11 h-11 rounded-2xl bg-${st.c}-50 text-${st.c}-600 flex items-center justify-center shrink-0"><i class="fa-solid ${st.i}"></i></div>
+                <div class="flex-1 min-w-0">
+                  <p class="font-black text-slate-800 text-xs">${d.method.toUpperCase()} · ${money(d.amount)}</p>
+                  ${d.methodType ? `<p class="text-[10px] text-slate-500 font-black mt-0.5">${esc(d.methodType)}</p>` : ''}
+                  <p class="text-[10px] text-slate-400 font-bold mt-0.5">TrxID: ${esc(d.txnId)}</p>
+                  <p class="text-[10px] text-slate-400 font-bold">${new Date(d.createdAt).toLocaleString()}</p>
+                </div>
+                <span class="text-[10px] font-black text-${st.c}-700 bg-${st.c}-100 px-2 py-1 rounded-full">${st.t}</span>
+              </div>
+            </div>`;
+        }).join('') : `<div class="text-center py-8 bg-white rounded-3xl shadow-soft"><i class="fa-solid fa-inbox text-2xl text-slate-300 mb-2"></i><p class="text-xs font-black text-slate-500">No deposit requests</p></div>`}
+      ` : ''}
+    </div>
+    ${bottomNav('profile')}
+  `;
+}
+
+function renderSecurity(){
+  if(!state.user){ go('login'); return; }
+  $('app').innerHTML = `
+    ${header('Security & Privacy', true)}
+    <div class="p-4 pb-28 bg-[#f4f6fb] min-h-screen space-y-4">
+      <div class="bg-white rounded-3xl p-5 shadow-soft space-y-4 fade-up">
+        <div class="flex items-center gap-3">
+          <div class="w-12 h-12 rounded-2xl btn-grad-dark text-white flex items-center justify-center shadow-xl"><i class="fa-solid fa-lock text-lg"></i></div>
+          <div><h3 class="font-black text-slate-800">Change Password</h3><p class="text-[10px] text-slate-400 font-bold">নিরাপদ পাসওয়ার্ড ব্যবহার করুন</p></div>
+        </div>
+        <div>
+          <label class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Current Password</label>
+          <div class="relative mt-1.5">
+            <input id="secOld" type="password" placeholder="বর্তমান পাসওয়ার্ড" class="inp w-full rounded-2xl px-4 py-3.5 pr-11 text-sm font-semibold">
+            <button onclick="togglePass('secOld')" class="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center press"><i class="fa-solid fa-eye text-slate-500 text-xs" id="secOld-eye"></i></button>
+          </div>
+        </div>
+        <div>
+          <label class="text-[10px] font-black text-slate-500 uppercase tracking-widest">New Password</label>
+          <div class="relative mt-1.5">
+            <input id="secNew" type="password" placeholder="নতুন পাসওয়ার্ড (min 4 chars)" class="inp w-full rounded-2xl px-4 py-3.5 pr-11 text-sm font-semibold">
+            <button onclick="togglePass('secNew')" class="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center press"><i class="fa-solid fa-eye text-slate-500 text-xs" id="secNew-eye"></i></button>
+          </div>
+        </div>
+        <div>
+          <label class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Confirm New Password</label>
+          <div class="relative mt-1.5">
+            <input id="secConfirm" type="password" placeholder="আবার লিখুন" class="inp w-full rounded-2xl px-4 py-3.5 pr-11 text-sm font-semibold">
+            <button onclick="togglePass('secConfirm')" class="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center press"><i class="fa-solid fa-eye text-slate-500 text-xs" id="secConfirm-eye"></i></button>
+          </div>
+        </div>
+        <div class="bg-amber-50 border border-amber-200 rounded-2xl p-3.5 flex items-start gap-2.5">
+          <i class="fa-solid fa-shield-halved text-amber-600 mt-0.5"></i>
+          <p class="text-[11px] text-amber-700 font-semibold leading-relaxed">শক্তিশালী পাসওয়ার্ড ব্যবহার করুন। কমপক্ষে ৪ অক্ষর, একটু কঠিন রাখুন।</p>
+        </div>
+        <button onclick="doChangePassword()" class="press w-full btn-grad-dark text-white py-4 rounded-2xl font-black shadow-xl"><i class="fa-solid fa-shield-halved mr-1.5"></i> Update Password</button>
+      </div>
+      <div class="bg-white rounded-3xl p-5 shadow-soft fade-up" style="animation-delay:.06s">
+        <h3 class="font-black text-slate-800 text-sm mb-3"><i class="fa-solid fa-circle-info text-emerald-600 mr-1"></i>Security Tips</h3>
+        <div class="space-y-2.5">
+          <div class="flex items-start gap-2.5"><div class="w-6 h-6 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0 mt-0.5"><i class="fa-solid fa-check text-[10px]"></i></div><p class="text-[11px] text-slate-600 font-semibold">কখনো অন্য কারো সাথে পাসওয়ার্ড শেয়ার করবেন না</p></div>
+          <div class="flex items-start gap-2.5"><div class="w-6 h-6 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0 mt-0.5"><i class="fa-solid fa-check text-[10px]"></i></div><p class="text-[11px] text-slate-600 font-semibold">নিয়মিত পাসওয়ার্ড পরিবর্তন করুন</p></div>
+          <div class="flex items-start gap-2.5"><div class="w-6 h-6 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0 mt-0.5"><i class="fa-solid fa-check text-[10px]"></i></div><p class="text-[11px] text-slate-600 font-semibold">সন্দেহজনক কিছু দেখলে সাথে সাথে পরিবর্তন করুন</p></div>
+        </div>
+      </div>
+    </div>
+    ${bottomNav('profile')}
+  `;
+}
+function togglePass(id){
+  const inp = $(id), eye = $(id+'-eye');
+  if(inp.type === 'password'){ inp.type = 'text'; eye.className = 'fa-solid fa-eye-slash text-slate-500 text-xs'; }
+  else { inp.type = 'password'; eye.className = 'fa-solid fa-eye text-slate-500 text-xs'; }
+}
+function doChangePassword(){
+  const o = $('secOld').value, n = $('secNew').value, c = $('secConfirm').value;
+  if(!o || !n || !c){ toast('Fill all fields','error'); return; }
+  if(n.length < 4){ toast('Password too short (min 4)','error'); return; }
+  if(n !== c){ toast('Passwords do not match','error'); return; }
+  if(o !== state.user.password){ toast('Current password is wrong','error'); return; }
+  showLoader();
+  setTimeout(()=>{
+    const users = DB.get('users',[]);
+    const i = users.findIndex(x=>x.id===state.user.id);
+    users[i].password = n;
+    DB.set('users', users);
+    state.user.password = n; DB.set('session_user', state.user);
+    showLoader(false);
+    $('secOld').value = ''; $('secNew').value = ''; $('secConfirm').value = '';
+    openModal(`
+      <div class="p-7 text-center">
+        <div class="w-20 h-20 mx-auto rounded-full bg-emerald-100 flex items-center justify-center mb-4 pulse-ring"><i class="fa-solid fa-shield-halved text-emerald-600 text-3xl"></i></div>
+        <h3 class="font-black text-xl text-slate-900">Password Updated!</h3>
+        <p class="text-sm text-slate-500 mt-1 font-semibold">আপনার পাসওয়ার্ড সফলভাবে পরিবর্তন হয়েছে</p>
+        <button onclick="closeModal()" class="press w-full mt-5 btn-grad text-white py-3.5 rounded-2xl font-black shadow-glow">OK</button>
+      </div>
+    `);
+  }, 700);
+}
+
+function renderCountry(){
+  if(!state.user){ go('login'); return; }
+  const u = state.user;
+  const hasAddr = u.village && u.upazila && u.district;
+  $('app').innerHTML = `
+    ${header('Country / Address', true)}
+    <div class="p-4 pb-28 bg-[#f4f6fb] min-h-screen space-y-4">
+      <div class="bg-white rounded-3xl p-5 shadow-soft fade-up">
+        <div class="flex items-center gap-3 mb-2">
+          <div class="w-12 h-12 rounded-2xl btn-grad-blue text-white flex items-center justify-center shadow-glow-blue"><i class="fa-solid fa-globe text-lg"></i></div>
+          <div><h3 class="font-black text-slate-800">Delivery Information</h3><p class="text-[10px] text-slate-400 font-bold">ঠিকানা যেখানে পার্সেল যাবে</p></div>
+        </div>
+        ${hasAddr ? `<div class="mt-3 bg-emerald-50 border border-emerald-100 rounded-2xl p-3 flex items-center gap-2"><i class="fa-solid fa-circle-check text-emerald-600"></i><p class="text-[11px] text-emerald-700 font-black">Address verified</p></div>` : `<div class="mt-3 bg-amber-50 border border-amber-100 rounded-2xl p-3 flex items-center gap-2"><i class="fa-solid fa-triangle-exclamation text-amber-600"></i><p class="text-[11px] text-amber-700 font-black">সম্পূর্ণ ঠিকানা দিন</p></div>`}
+      </div>
+      <div class="bg-white rounded-3xl p-5 shadow-soft space-y-4 fade-up" style="animation-delay:.06s">
+        <h3 class="font-black text-slate-800 text-sm"><i class="fa-solid fa-user text-emerald-600 mr-1"></i> ব্যক্তিগত তথ্য</h3>
+        <div><label class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Full Name / নাম <span class="text-rose-500">*</span></label><input id="ctyName" value="${esc(u.name)}" placeholder="আপনার নাম" class="inp w-full mt-1.5 rounded-2xl px-4 py-3.5 text-sm font-semibold"></div>
+        <div><label class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Phone / ফোন <span class="text-rose-500">*</span></label><input id="ctyPhone" value="${esc(u.phone||'')}" placeholder="01XXXXXXXXX" class="inp w-full mt-1.5 rounded-2xl px-4 py-3.5 text-sm font-semibold"></div>
+      </div>
+      <div class="bg-white rounded-3xl p-5 shadow-soft space-y-4 fade-up" style="animation-delay:.12s">
+        <h3 class="font-black text-slate-800 text-sm"><i class="fa-solid fa-location-dot text-blue-600 mr-1"></i> ঠিকানা / Address</h3>
+        <div><label class="text-[10px] font-black text-slate-500 uppercase tracking-widest">গ্রাম / Village <span class="text-rose-500">*</span></label><input id="ctyVillage" value="${esc(u.village||'')}" placeholder="যেমন: সরাইল" class="inp w-full mt-1.5 rounded-2xl px-4 py-3.5 text-sm font-semibold"></div>
+        <div><label class="text-[10px] font-black text-slate-500 uppercase tracking-widest">উপজেলা / Upazila <span class="text-rose-500">*</span></label><input id="ctyUpazila" value="${esc(u.upazila||'')}" placeholder="যেমন: সরাইল" class="inp w-full mt-1.5 rounded-2xl px-4 py-3.5 text-sm font-semibold"></div>
+        <div><label class="text-[10px] font-black text-slate-500 uppercase tracking-widest">জেলা / District <span class="text-rose-500">*</span></label><input id="ctyDistrict" value="${esc(u.district||'')}" placeholder="যেমন: ব্রাহ্মণবাড়িয়া" class="inp w-full mt-1.5 rounded-2xl px-4 py-3.5 text-sm font-semibold"></div>
+        <div><label class="text-[10px] font-black text-slate-500 uppercase tracking-widest">সম্পূর্ণ ঠিকানা / Full Address</label><textarea id="ctyAddress" rows="3" placeholder="বাসা নম্বর, রোড, এলাকা, ল্যান্ডমার্ক" class="inp w-full mt-1.5 rounded-2xl px-4 py-3.5 text-sm font-semibold resize-none">${esc(u.address||'')}</textarea></div>
+      </div>
+      <div class="bg-blue-50 border border-blue-100 rounded-3xl p-4 fade-up" style="animation-delay:.18s">
+        <p class="text-xs font-black text-blue-700"><i class="fa-solid fa-truck-fast mr-1"></i> Delivery Info</p>
+        <p class="text-[11px] text-blue-600 font-semibold mt-1.5 leading-relaxed">এই ঠিকানাতেই আপনার সব পার্সেল ডেলিভারি হবে। চেকআউটে এটা স্বয়ংক্রিয়ভাবে বসে যাবে।</p>
+      </div>
+      <button onclick="saveCountry()" class="press w-full btn-grad-blue text-white py-4 rounded-2xl font-black shadow-glow-blue fade-up" style="animation-delay:.24s"><i class="fa-solid fa-floppy-disk mr-1.5"></i> Save Address</button>
+    </div>
+    ${bottomNav('profile')}
+  `;
+}
+function saveCountry(){
+  const name = $('ctyName').value.trim(), phone = $('ctyPhone').value.trim();
+  const village = $('ctyVillage').value.trim(), upazila = $('ctyUpazila').value.trim();
+  const district = $('ctyDistrict').value.trim(), address = $('ctyAddress').value.trim();
+  if(!name){ toast('Enter your name','error'); return; }
+  if(!phone || phone.length < 11){ toast('Enter valid phone (11 digits)','error'); return; }
+  if(!village){ toast('Enter village (গ্রাম)','error'); return; }
+  if(!upazila){ toast('Enter upazila (উপজেলা)','error'); return; }
+  if(!district){ toast('Enter district (জেলা)','error'); return; }
+  showLoader();
+  setTimeout(()=>{
+    const u = { ...state.user, name, phone, village, upazila, district, address };
+    const users = DB.get('users',[]);
+    const i = users.findIndex(x=>x.id===u.id);
+    if(i>-1){ users[i] = u; DB.set('users', users); }
+    state.user = u; DB.set('session_user', u);
+    /* 🔥 Firebase sync */
+    if(fbReady){ try { fbDb.collection('users').doc('u_'+u.id).set(u); } catch(e){} }
+    showLoader(false);
+    openModal(`
+      <div class="p-7 text-center">
+        <div class="w-20 h-20 mx-auto rounded-full bg-emerald-100 flex items-center justify-center mb-4 pulse-ring"><i class="fa-solid fa-circle-check text-emerald-600 text-3xl"></i></div>
+        <h3 class="font-black text-xl text-slate-900">Address Saved!</h3>
+        <p class="text-sm text-slate-500 mt-1 font-semibold">আপনার ঠিকানা সংরক্ষিত হয়েছে</p>
+        <button onclick="closeModal();go('profile')" class="press w-full mt-5 btn-grad-blue text-white py-3.5 rounded-2xl font-black shadow-glow-blue">Back to Profile</button>
+      </div>
+    `);
+  }, 600);
+}
+
+function getAIResponse(msg){
+  const m = msg.toLowerCase().trim();
+  const s = getSettings();
+  const pi = s.paymentInfo;
+  const cats = DB.get('categories',[]).map(c=>'• '+c.name).join('\n');
+  const prods = DB.get('products',[]);
+  if(/^(hi|hello|hey|assalam|আসসালাম|হ্যালো|হাই|salam)/i.test(m)){
+    return `ওয়ালাইকুম আসসালাম! 🌟\n\nআমি KHF AI — আপনার শপিং অ্যাসিস্ট্যান্ট।\n\nআমি এই বিষয়ে সাহায্য করতে পারি:\n\n🛒 অর্ডার করার নিয়ম\n💳 পেমেন্ট পদ্ধতি\n🚚 ডেলিভারি তথ্য\n💰 ওয়ালেট ডিপোজিট\n📍 ঠিকানা সেট করা\n📦 অর্ডার ট্র্যাকিং\n↩️ রিটার্ন পলিসি\n🔒 পাসওয়ার্ড পরিবর্তন\n📞 কন্টাক্ট সাপোর্ট\n\nকোনটা জানতে চান?`;
+  }
+  if(/(order|অর্ডার|কিনব|কিভাবে কিনব|কিনতে|buy|purchase|checkout)/i.test(m)){
+    return `🛒 অর্ডার করার ৮টি সহজ ধাপ:\n\n১️⃣ হোম বা Shop পেজে যান\n২️⃣ পছন্দের প্রোডাক্টে ক্লিক করুন\n৩️⃣ "Add to Cart" বাটনে চাপুন\n৪️⃣ উপরের কার্ট আইকনে যান\n৫️⃣ "Checkout" চাপুন\n৬️⃣ Delivery Location বাছুন\n   → Inside Dhaka: ${money(s.deliveryInside)}\n   → Outside Dhaka: ${money(s.deliveryOutside)}\n৭️⃣ Payment Method বাছুন\n৮️⃣ "Place Order" চাপুন ✅\n\nব্যস! অর্ডার প্লেসড।`;
+  }
+  if(/(payment|pay|bkash|nagad|পেমেন্ট|বিকাশ|নগদ|টাকা দিব|deposit|ডিপোজিট)/i.test(m)){
+    const bal = state.user ? getMyBalance() : 0;
+    let methodList = '';
+    if(pi.bkash.enabled) methodList += `\n• BKash: ${pi.bkash.number} (${pi.bkash.method})`;
+    if(pi.nagad.enabled) methodList += `\n• Nagad: ${pi.nagad.number} (${pi.nagad.method})`;
+    if(pi.bank.enabled) methodList += `\n• Bank: ${pi.bank.bankName} - ${pi.bank.accountNumber}`;
+    return `💳 পেমেন্ট ও ডিপোজিট:\n\n**Payment Methods:**\n1️⃣ COD · 2️⃣ BKash · 3️⃣ Nagad · 4️⃣ Wallet\n\n**Wallet Balance:** ${money(bal)}\n\n**Deposit Numbers:**${methodList}\n\n**Deposit পদ্ধতি:**\nWallet → Deposit → Method বাছুন → টাকা পাঠান → TrxID দিন → Submit\n\n💡 ${pi.autoApprove ? 'Auto-approve চালু, তাৎক্ষণিক ব্যালেন্স যোগ হবে!' : 'অ্যাডমিন ৫-৩০ মিনিটে approve করবে।'}`;
+  }
+  if(/(delivery|ডেলিভারি|charge|শিপিং|কত দিন|কবে পাব)/i.test(m)){
+    return `🚚 ডেলিভারি চার্জ ও সময়:\n\n📍 ঢাকার ভিতরে: ${money(s.deliveryInside)} · ১-২ দিন\n🏔️ ঢাকার বাইরে: ${money(s.deliveryOutside)} · ২-৪ দিন\n\n🎁 FREE Delivery: ${money(s.freeDeliveryThreshold)}+ এ\n\n⚠️ কিছু প্রোডাক্টে আলাদা চার্জ থাকতে পারে।`;
+  }
+  if(/(wallet|ওয়ালেট|balance|ব্যালেন্স|recharge)/i.test(m)){
+    const bal = state.user ? getMyBalance() : 0;
+    return `💰 Wallet ডিপোজিট:\n\nবর্তমান ব্যালেন্স: ${money(bal)}\n\nধাপ:\n১️⃣ Profile → My Wallet\n২️⃣ "Deposit" চাপুন\n৩️⃣ Method বাছুন (BKash/Nagad/Bank)\n৪️⃣ Send Money করুন\n৫️⃣ Amount + TrxID লিখুন\n৬️⃣ Submit করুন\n\n✅ Min deposit: ${money(pi.minDeposit)}\n${pi.autoApprove ? '⚡ Auto-approve চালু!' : '⏰ ৫-৩০ মিনিটে approve হবে'}`;
+  }
+  if(/(address|ঠিকানা|country|গ্রাম|upazila|district|village|location)/i.test(m)){
+    return `📍 ঠিকানা সেট করার নিয়ম:\n\nProfile → Country / Address\n\nলিখতে হবে:\n• নাম, ফোন\n• গ্রাম\n• উপজেলা\n• জেলা\n• সম্পূর্ণ ঠিকানা\n\n✅ Save চাপুন।\n💡 চেকআউটে অটো-ফিল হবে।`;
+  }
+  if(/(track|ট্র্যাক|order status|অর্ডার কোথায়|status)/i.test(m)){
+    if(!state.user) return `Login করুন, তারপর Orders ট্যাবে আপনার অর্ডার দেখুন।`;
+    const myOrders = DB.get('orders',[]).filter(o=>o.user_id === state.user.id);
+    if(!myOrders.length) return `📦 আপনি এখনো অর্ডার করেননি।\n\n"অর্ডার" লিখুন — কীভাবে করবেন জানতে।`;
+    const last = myOrders[0];
+    return `📦 সর্বশেষ অর্ডার:\n\n• ID: #${last.id}\n• Status: ${last.status}\n• Total: ${money(last.total)}\n• Date: ${new Date(last.created_at).toLocaleDateString()}\n\nOrders ট্যাবে গিয়ে "View Details" চাপুন।`;
+  }
+  if(/(return|refund|ফেরত|রিটার্ন|বদল)/i.test(m)){
+    return `↩️ রিটার্ন পলিসি:\n\n✅ ৭ দিনের মধ্যে রিটার্ন\n✅ অক্ষত ও অব্যবহৃত পণ্য\n✅ অরিজিনাল প্যাকেজিং\n\nHelp Center → Order ID → কারণ লিখুন\n\nঅ্যাডমিন approve করলে রিফান্ড হবে।`;
+  }
+  if(/(password|পাসওয়ার্ড|security|সিকিউরিটি)/i.test(m)){
+    return `🔒 পাসওয়ার্ড পরিবর্তন:\n\n১️⃣ Profile → Security & Privacy\n২️⃣ Current Password\n৩️⃣ New Password (min ৪)\n৪️⃣ Confirm\n৫️⃣ Update Password\n\n⚠️ কখনো শেয়ার করবেন না!`;
+  }
+  if(/(help|contact|সাহায্য|যোগাযোগ|support)/i.test(m)){
+    return `📞 সাপোর্ট:\n\n📱 01700-000000\n📧 support@khfshop.com\n⏰ সকাল ১০টা - রাত ১০টা\n\nঅথবা এই চ্যাটে জিজ্ঞেস করুন! 🤖`;
+  }
+  if(/(thank|ধন্যবাদ|thanks)/i.test(m)){
+    return `আপনাকেও ধন্যবাদ! 😊\n\nHappy Shopping! 🛍️`;
+  }
+  if(/(product|প্রোডাক্ট|category|ক্যাটাগরি|item)/i.test(m)){
+    return `📦 আমাদের ক্যাটাগরি:\n\n${cats}\n\nমোট প্রোডাক্ট: ${prods.length}টি\n\nShop ট্যাবে সব দেখুন।`;
+  }
+  if(/(cart|কার্ট|basket)/i.test(m)){
+    const cnt = cartCount(); const total = cartTotal();
+    if(cnt === 0) return `🛒 আপনার কার্ট খালি।\n\nShop পেজ থেকে Add to Cart করুন।`;
+    return `🛒 আপনার কার্ট:\n\n• মোট: ${cnt}টি\n• দাম: ${money(total)}\n\nCart ট্যাব → Checkout`;
+  }
+  if(/(balance|ব্যালেন্স|কত টাকা)/i.test(m)){
+    if(!state.user) return `🔐 Login করুন।`;
+    return `💰 Wallet Balance: ${money(getMyBalance())}`;
+  }
+  if(/(discount|offer|sale|ছাড়|অফার)/i.test(m)){
+    return `🎉 অফার:\n\n🔥 Featured Deals: ৩০-৪০% ছাড়\n⚡ Flash Sale: চলছে\n🎁 FREE Delivery: ${money(s.freeDeliveryThreshold)}+ এ`;
+  }
+  if(/(bye|বিদায়|আল্লাহ হাফেজ)/i.test(m)) return `আল্লাহ হাফেজ! 👋\n\nআবার আসবেন!`;
+  return `আমি বুঝতে পারিনি 🤔\n\nজিজ্ঞেস করুন:\n• "অর্ডার কিভাবে?"\n• "পেমেন্ট অপশন"\n• "ডেলিভারি চার্জ"\n• "Wallet ডিপোজিট"\n• "ঠিকানা সেট"\n• "অর্ডার ট্র্যাক"\n• "রিটার্ন পলিসি"\n\nঅথবা "Help" লিখুন।`;
+}
+
+function renderAIChat(){
+  if(!state.user){ go('login'); return; }
+  if(!state.chatHistory.length){
+    state.chatHistory = [{role:'bot', text:`ওয়ালাইকুম আসসালাম, ${state.user.name}! 👋\n\nআমি KHF AI — আপনার ২৪/৭ শপিং অ্যাসিস্ট্যান্ট।\n\nআমি ধাপে ধাপে সবকিছু বলে দিতে পারি:\n\n🛒 অর্ডার করা\n💳 পেমেন্ট পদ্ধতি\n🚚 ডেলিভারি তথ্য\n💰 ওয়ালেট ডিপোজিট\n📍 ঠিকানা সেট\n📦 অর্ডার ট্র্যাকিং\n↩️ রিটার্ন পলিসি\n🔒 পাসওয়ার্ড\n📞 কন্টাক্ট\n\nনিচের চিপ থেকে বেছে নিন বা নিজে প্রশ্ন লিখুন ⬇️`, time: new Date().toISOString()}];
+    DB.set('chat_history', state.chatHistory);
+  }
+  const quickChips = ['কিভাবে অর্ডার করব?', 'পেমেন্ট অপশন', 'ডেলিভারি চার্জ', 'Wallet ডিপোজিট', 'ঠিকানা সেট', 'পাসওয়ার্ড পরিবর্তন'];
+
+  $('app').innerHTML = `
+    <div class="flex flex-col" style="height:100vh">
+      <header class="sticky top-0 z-30 ai-grad text-white shadow-xl">
+        <div class="flex items-center gap-3 px-3 h-16">
+          <button onclick="go('profile')" class="press w-10 h-10 rounded-2xl flex items-center justify-center bg-white/15 backdrop-blur"><i class="fa-solid fa-arrow-left"></i></button>
+          <div class="relative">
+            <div class="w-11 h-11 rounded-2xl bg-white/20 backdrop-blur flex items-center justify-center shadow-lg"><i class="fa-solid fa-robot text-lg"></i></div>
+            <span class="absolute bottom-0 right-0 w-3 h-3 bg-emerald-400 rounded-full border-2 border-white pulse-dot"></span>
+          </div>
+          <div class="flex-1 min-w-0"><h2 class="font-black text-sm">KHF AI Assistant</h2><p class="text-[10px] text-purple-100 font-semibold">Online · সদা প্রস্তুত</p></div>
+          <button onclick="clearChat()" class="press w-9 h-9 rounded-full bg-white/15 backdrop-blur flex items-center justify-center" title="Clear chat"><i class="fa-solid fa-rotate-right text-sm"></i></button>
+        </div>
+      </header>
+      <div id="chatBox" class="flex-1 overflow-y-auto scrollx px-4 py-4 space-y-3" style="padding-bottom:200px">
+        <div class="text-center mb-2"><span class="text-[10px] font-black text-slate-400 bg-white px-3 py-1 rounded-full shadow-soft">🔒 End-to-end encrypted</span></div>
+        ${state.chatHistory.map(msg=>renderChatBubble(msg)).join('')}
+        ${state.chatTyping ? `
+          <div class="flex gap-2 items-end slide-right">
+            <div class="w-8 h-8 rounded-full ai-grad flex items-center justify-center text-white shrink-0 shadow"><i class="fa-solid fa-robot text-xs"></i></div>
+            <div class="chat-bubble-bot px-4 py-3 rounded-2xl rounded-bl-sm"><span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span></div>
+          </div>
+        ` : ''}
+      </div>
+    </div>
+    <div class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] z-40">
+      <div class="px-3 mb-2">
+        <div class="flex gap-2 overflow-x-auto scrollx pb-1">
+          ${quickChips.map(q=>`<button onclick="quickAsk('${q}')" class="quick-chip shrink-0 px-3 py-2 text-slate-700 text-[11px] font-black rounded-full press">${q}</button>`).join('')}
+        </div>
+      </div>
+      <div class="px-3 pb-3">
+        <div class="glass rounded-3xl shadow-2xl border border-slate-200/60 p-2 flex gap-2 items-center">
+          <input id="chatInput" onkeypress="if(event.key==='Enter')sendChat()" placeholder="বাংলায় লিখুন..." class="flex-1 bg-slate-100 rounded-2xl px-4 py-3 text-sm font-semibold focus:outline-none" autocomplete="off">
+          <button onclick="sendChat()" class="press ai-grad text-white w-11 h-11 rounded-2xl flex items-center justify-center shadow-glow-violet shrink-0"><i class="fa-solid fa-paper-plane"></i></button>
+        </div>
+      </div>
+    </div>
+  `;
+  updateBadges();
+  setTimeout(()=>{ const box = $('chatBox'); if(box) box.scrollTop = box.scrollHeight; }, 120);
+}
+function renderChatBubble(msg){
+  const isUser = msg.role === 'user';
+  const time = new Date(msg.time).toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
+  return `
+    <div class="flex gap-2 items-end ${isUser?'flex-row-reverse slide-left':'slide-right'}">
+      <div class="w-8 h-8 rounded-full ${isUser?'btn-grad':'ai-grad'} flex items-center justify-center text-white shrink-0 shadow"><i class="fa-solid ${isUser?'fa-user':'fa-robot'} text-xs"></i></div>
+      <div class="${isUser?'chat-bubble-user':'chat-bubble-bot'} px-4 py-3 rounded-2xl ${isUser?'rounded-br-sm':'rounded-bl-sm'} max-w-[78%]">
+        <p class="text-[13px] font-semibold leading-relaxed whitespace-pre-line">${esc(msg.text)}</p>
+        <div class="flex items-center gap-1 justify-end mt-1.5"><span class="text-[9px] ${isUser?'text-emerald-100':'text-slate-400'} font-bold">${time}</span>${isUser?`<i class="fa-solid fa-check-double text-[8px] text-emerald-100"></i>`:''}</div>
+      </div>
+    </div>`;
+}
+function quickAsk(q){ const inp = $('chatInput'); if(inp){ inp.value = q; sendChat(); } }
+function sendChat(){
+  const inp = $('chatInput'); if(!inp) return;
+  const msg = inp.value.trim(); if(!msg) return;
+  inp.value = '';
+  state.chatHistory.push({role:'user', text:msg, time:new Date().toISOString()});
+  DB.set('chat_history', state.chatHistory);
+  state.chatTyping = true;
+  renderAIChat();
+  const delay = 700 + Math.random() * 700;
+  setTimeout(()=>{
+    const reply = getAIResponse(msg);
+    state.chatTyping = false;
+    state.chatHistory.push({role:'bot', text:reply, time:new Date().toISOString()});
+    DB.set('chat_history', state.chatHistory);
+    renderAIChat();
+  }, delay);
+}
+function clearChat(){
+  if(!confirm('Clear chat history?')) return;
+  state.chatHistory = []; DB.set('chat_history', []); renderAIChat(); toast('Chat cleared','info');
+}
+
+function renderAuth(){
+  const isLogin = state.authTab === 'login';
+  $('app').innerHTML = `
+    ${header(isLogin?'Sign In':'Create Account', true)}
+    <div class="min-h-[calc(100vh-64px)] bg-white">
+      <div class="px-6 pt-8 pb-6 fade-up">
+        <div class="text-center mb-8">
+          <div class="w-20 h-20 mx-auto rounded-[28px] hero-grad flex items-center justify-center shadow-glow relative overflow-hidden">
+            <div class="absolute inset-0 bg-white/10"></div>
+            <i class="fa-solid fa-bag-shopping text-white text-3xl relative"></i>
+          </div>
+          <h1 class="font-black text-2xl mt-5 text-slate-900">${isLogin?'Welcome Back!':'Join KHF Shop'}</h1>
+          <p class="text-xs text-slate-400 mt-1 font-semibold">${isLogin?'আপনার অ্যাকাউন্টে লগইন করুন':'নতুন অ্যাকাউন্ট খুলুন'}</p>
+        </div>
+        <div class="bg-slate-100 rounded-2xl p-1.5 flex mb-6">
+          <button onclick="state.authTab='login';render()" class="flex-1 py-3 text-xs font-black rounded-xl transition ${isLogin?'bg-white text-emerald-600 shadow-soft':'text-slate-500'}">Login</button>
+          <button onclick="state.authTab='signup';render()" class="flex-1 py-3 text-xs font-black rounded-xl transition ${!isLogin?'bg-white text-emerald-600 shadow-soft':'text-slate-500'}">Sign Up</button>
+        </div>
+        <div class="space-y-3">
+          ${!isLogin ? `
+            <div class="relative"><i class="fa-solid fa-user absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i><input id="suName" placeholder="Full Name" class="inp w-full rounded-2xl pl-11 pr-4 py-4 text-sm font-semibold"></div>
+            <div class="relative"><i class="fa-solid fa-phone absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i><input id="suPhone" placeholder="Phone Number" class="inp w-full rounded-2xl pl-11 pr-4 py-4 text-sm font-semibold"></div>
+          ` : ''}
+          <div class="relative"><i class="fa-solid fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i><input id="authEmail" type="email" placeholder="Email" class="inp w-full rounded-2xl pl-11 pr-4 py-4 text-sm font-semibold"></div>
+          <div class="relative"><i class="fa-solid fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i><input id="authPass" type="password" placeholder="Password" class="inp w-full rounded-2xl pl-11 pr-4 py-4 text-sm font-semibold"></div>
+          <div id="authErr" class="text-rose-500 text-xs font-black hidden bg-rose-50 rounded-xl px-4 py-3 border border-rose-100"><i class="fa-solid fa-circle-exclamation mr-1"></i><span id="authErrMsg"></span></div>
+          <button onclick="${isLogin?'doLogin()':'doSignup()'}" class="press w-full btn-grad text-white py-4 rounded-2xl font-black shadow-glow mt-2">${isLogin?'<i class="fa-solid fa-right-to-bracket mr-1.5"></i> Sign In':'<i class="fa-solid fa-user-plus mr-1.5"></i> Create Account'}</button>
+        </div>
+      </div>
+    </div>
+  `;
+  updateBadges();
+}
+function doLogin(){
+  const email = $('authEmail').value.trim(), pass = $('authPass').value;
+  if(!email || !pass){ showAuthErr('Fill all fields'); return; }
+  if(!email.includes('@')){ showAuthErr('Enter valid email'); return; }
+  showLoader();
+  setTimeout(()=>{
+    const r = login(email, pass);
+    showLoader(false);
+    if(!r.ok) return showAuthErr(r.msg);
+    toast('Welcome back!','success'); go('home');
+  }, 700);
+}
+function doSignup(){
+  const name = $('suName').value.trim(), phone = $('suPhone').value.trim();
+  const email = $('authEmail').value.trim(), pass = $('authPass').value;
+  if(!name || !phone || !email || !pass){ showAuthErr('Fill all fields'); return; }
+  if(!email.includes('@')){ showAuthErr('Enter valid email'); return; }
+  if(phone.length < 11){ showAuthErr('Phone must be 11 digits'); return; }
+  if(pass.length < 4){ showAuthErr('Password too short'); return; }
+  showLoader();
+  setTimeout(()=>{
+    const r = signup(name, phone, email, pass);
+    showLoader(false);
+    if(!r.ok) return showAuthErr(r.msg);
+    toast('Account created!','success'); go('country');
+  }, 700);
+}
+function showAuthErr(msg){ const e = $('authErr'), m = $('authErrMsg'); m.textContent = msg; e.classList.remove('hidden'); }
+
+/* ---- INIT ---- */
+render();
+/* Sync settings from Firebase after initial render (if configured) */
+setTimeout(()=>{ fbSyncSettings(); }, 800);
+</script>
+</body>
+</html>
