@@ -1,0 +1,104 @@
+
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blue Glow Button</title>
+<script src='//libtl.com/sdk.js' data-zone='11525152' data-sdk='show_11525152'></script>
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #050b18;
+    font-family: Arial, sans-serif;
+}
+
+.glow-btn {
+    position: relative;
+    padding: 20px 65px;
+    border: 2px solid #168cff;
+    border-radius: 15px;
+    background: #071a35;
+    color: #ffffff;
+    font-size: 20px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: 0.4s ease;
+    box-shadow: 0 0 10px #087bff;
+    overflow: hidden;
+}
+
+.glow-btn:hover {
+    transform: scale(1.05);
+}
+
+.glow-btn.active {
+    background: #087bff;
+    border-color: #75caff;
+    color: white;
+    box-shadow:
+        0 0 10px #008cff,
+        0 0 25px #008cff,
+        0 0 50px #008cff,
+        0 0 90px #006eff;
+    animation: pulse 1.5s infinite alternate;
+}
+
+@keyframes pulse {
+    from {
+        box-shadow: 0 0 15px #008cff,
+                    0 0 30px #008cff;
+    }
+    to {
+        box-shadow: 0 0 30px #008cff,
+                    0 0 65px #008cff,
+                    0 0 100px #006eff;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<button class="glow-btn" id="glowButton">
+    CLICK ME
+</button>
+
+<script>
+const button = document.getElementById("glowButton");
+
+button.addEventListener("click", function() {
+    button.classList.toggle("active");
+
+
+// Rewarded Popup
+
+show_11525152('pop').then(() => {
+    // user watch ad till the end or close it in interstitial format
+    // your code to reward user for rewarded format
+}).catch(e => {
+    // user get error during playing ad
+    // do nothing or whatever you want
+})
+
+        
+    if (button.classList.contains("active")) {
+        button.innerText = "LIGHT ON";
+    } else {
+        button.innerText = "CLICK ME";
+    }
+});
+</script>
+
+</body>
+</html>
