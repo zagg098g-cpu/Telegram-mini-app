@@ -4,9 +4,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Blue Glow Button</title>
-    <script>(function(s){s.dataset.zone='11664782',s.src='https://nap5k.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
-<script src='//libtl.com/sdk.js' data-zone='11525152' data-sdk='show_11525152'></script>
+<title>Blue Glow Reward App</title>
+
+<!-- Monetag Rewarded Popup SDK -->
+<script src="https://libtl.com/sdk.js"
+data-zone="11525152"
+data-sdk="show_11525152"></script>
+
 <style>
 * {
     margin: 0;
@@ -15,38 +19,68 @@
 }
 
 body {
-    height: 100vh;
+    min-height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
     background: #050b18;
     font-family: Arial, sans-serif;
+    color: white;
+}
+
+.container {
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+    padding: 25px;
+}
+
+.wallet {
+    background: #071a35;
+    border: 1px solid #168cff;
+    border-radius: 14px;
+    padding: 20px;
+    margin-bottom: 35px;
+    box-shadow: 0 0 15px #087bff55;
+}
+
+.wallet h3 {
+    color: #80caff;
+    margin-bottom: 12px;
+}
+
+.balance {
+    font-size: 32px;
+    font-weight: bold;
+    color: #00e5ff;
 }
 
 .glow-btn {
-    position: relative;
-    padding: 20px 65px;
+    padding: 20px 55px;
     border: 2px solid #168cff;
     border-radius: 15px;
     background: #071a35;
-    color: #ffffff;
+    color: white;
     font-size: 20px;
     font-weight: bold;
     letter-spacing: 2px;
     cursor: pointer;
-    transition: 0.4s ease;
+    transition: 0.4s;
     box-shadow: 0 0 10px #087bff;
-    overflow: hidden;
 }
 
 .glow-btn:hover {
     transform: scale(1.05);
 }
 
+.glow-btn:disabled {
+    opacity: 0.6;
+    cursor: wait;
+}
+
 .glow-btn.active {
     background: #087bff;
     border-color: #75caff;
-    color: white;
     box-shadow:
         0 0 10px #008cff,
         0 0 25px #008cff,
@@ -66,39 +100,127 @@ body {
                     0 0 100px #006eff;
     }
 }
+
+#status {
+    margin-top: 25px;
+    color: #9bcfff;
+    font-size: 14px;
+    min-height: 40px;
+    line-height: 1.6;
+}
+
+.note {
+    color: #8295ad;
+    font-size: 12px;
+    margin-top: 15px;
+}
 </style>
 </head>
 
 <body>
 
-<button class="glow-btn" id="glowButton">
-    CLICK ME
-</button>
+<div class="container">
+
+    <div class="wallet">
+        <h3>MY REWARD WALLET</h3>
+        <div class="balance" id="balance">৳0.00</div>
+    </div>
+
+    <button class="glow-btn" id="glowButton">
+        WATCH AD
+    </button>
+
+    <div id="status">
+        বিজ্ঞাপন দেখে রিওয়ার্ড সংগ্রহ করুন
+    </div>
+
+    <div class="note">
+        Complete the advertisement to receive rewards.
+    </div>
+
+</div>
 
 <script>
+
 const button = document.getElementById("glowButton");
+const balanceDisplay = document.getElementById("balance");
+const statusDisplay = document.getElementById("status");
 
-button.addEventListener("click", function() {
-    button.classList.toggle("active");
+// SETTINGS
+const REWARD_AMOUNT = 1;
+const STORAGE_KEY = "blue_glow_reward_balance";
 
+// Load Wallet
+let balance = Number(localStorage.getItem(STORAGE_KEY)) || 0;
+
+balanceDisplay.innerText = "৳" + balance.toFixed(2);
 
 // Rewarded Popup
+button.addEventListener("click", async function() {
 
-show_11525152('pop').then(() => {
-    // user watch ad till the end or close it in interstitial format
-    // your code to reward user for rewarded format
-}).catch(e => {
-    // user get error during playing ad
-    // do nothing or whatever you want
-})
+    if (button.disabled) return;
 
-        
-    if (button.classList.contains("active")) {
-        button.innerText = "LIGHT ON";
-    } else {
-        button.innerText = "CLICK ME";
+    // Check Monetag SDK
+    if (typeof window.show_11525152 !== "function") {
+
+        statusDisplay.innerText =
+            "বিজ্ঞাপন SDK লোড হয়নি! ইন্টারনেট ও Zone ID চেক করুন।";
+
+        return;
     }
+
+    button.disabled = true;
+    button.classList.add("active");
+    button.innerText = "LOADING AD...";
+
+    statusDisplay.innerText = "বিজ্ঞাপন লোড হচ্ছে...";
+
+    try {
+
+        // SHOW REWARDED POPUP
+        await window.show_11525152('pop');
+
+        // SUCCESS CALLBACK
+        // Only reward when Monetag confirms
+        // successful completion for this format.
+
+        balance += REWARD_AMOUNT;
+
+        // Save Wallet
+        localStorage.setItem(
+            STORAGE_KEY,
+            balance.toFixed(2)
+        );
+
+        // Update Balance
+        balanceDisplay.innerText =
+            "৳" + balance.toFixed(2);
+
+        statusDisplay.innerText =
+            "অভিনন্দন! ৳" +
+            REWARD_AMOUNT +
+            " রিওয়ার্ড যোগ হয়েছে!";
+
+        button.innerText = "WATCH AGAIN";
+
+    } catch(error) {
+
+        console.error("Monetag Error:", error);
+
+        statusDisplay.innerText =
+            "বিজ্ঞাপন দেখানো যায়নি। আবার চেষ্টা করুন।";
+
+        button.innerText = "TRY AGAIN";
+
+    } finally {
+
+        button.disabled = false;
+        button.classList.remove("active");
+
+    }
+
 });
+
 </script>
 
 </body>
